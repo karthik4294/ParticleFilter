@@ -11,12 +11,16 @@ list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
+find_package(OpenCV 2 REQUIRED)
+include_directories(${OpenCV_INCLUDE_DIRS})
+
 include_directories(include)
 
 add_library(particleFilter
-	    	src/test.cpp)
+	    	src/test.cpp
+	    	src/map_parser.cpp)
 
-target_link_libraries(particleFilter ${Boost_LIBRARIES})
+target_link_libraries(particleFilter ${Boost_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable(runTest src/run_test.cpp)
 target_link_libraries(runTest particleFilter)
