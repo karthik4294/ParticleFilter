@@ -17,16 +17,16 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(include)
 
 add_library(particleFilter
-				#src/test.cpp
-				#src/map_parser.cpp
+        src/log.cpp
         src/particle.cpp
 	    	src/map.cpp)
-				#src/log_parser.cpp)
 
 target_link_libraries(particleFilter ${Boost_LIBRARIES} ${OpenCV_LIBRARIES})
 
 add_executable(runTest src/run_test.cpp)
+add_executable(unitTest src/unit_test.cpp)
 target_link_libraries(runTest particleFilter)
+target_link_libraries(unitTest particleFilter)
 
 
 	

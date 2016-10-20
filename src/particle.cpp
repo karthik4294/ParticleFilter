@@ -25,5 +25,5 @@ void Particle::move(float x_disp, float y_disp, float theta_disp) {
      x += x_disp;
      y += y_disp;
      //theta_noise = theta_val;
-     // TODO FIX
+     // TODO FIX -- add new function applytransform
 }
