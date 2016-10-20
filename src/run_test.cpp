@@ -22,16 +22,17 @@ int main(int argc , char *argv[]){
   int min = 0;
     
   for (int i = 0; i < 100; i ++) {
-
     x = min + rand() % (max - min);
     y = min + rand() % (max - min);
-
-    //printf("Particle %d x=%d y=%d\n", i, x, y);
 
     p = new Particle(x, y, 0);
     particle_list->push_back(*p);
   }
+  map->visualizeParticles(particle_list);
 
+  for(std::vector<Particle>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
+    it->move(2.0,2.0, 0.0);
+  }
   map->visualizeParticles(particle_list);
 
  	return 0;

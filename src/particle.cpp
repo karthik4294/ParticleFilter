@@ -19,3 +19,11 @@ void Particle::set_noise(float x_val, float y_val, float theta_val) {
      y_noise = y_val;
      theta_noise = theta_val;
 }
+
+
+void Particle::move(float x_disp, float y_disp, float theta_disp) {
+     x += x_disp;
+     y += y_disp;
+     //theta_noise = theta_val;
+     // TODO FIX
+}
