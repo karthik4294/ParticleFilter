@@ -1,13 +1,17 @@
 #include <iostream>
-#include <map_parser.h>
+#include <map.h>
+#include <particle.h>
 #include <log_parser.h>
 
 int main(int argc , char *argv[]){
 
-	MapParser *mp = new MapParser("./data/map/wean.dat");	
-   //mp->displayMap();
+  //Map *map = new Map("./data/map/test.dat");
+  Map *map = new Map("./data/map/wean.dat");
+  //map->printMap();
+  map->displayMap();
 
-	LogParser *lp = new LogParser("./data/log/robotdata1.log");	
- 	lp->displayLog();
+  Particle *p1 = new Particle();
+  vector<Particle> *particle_list;
+  map->visualizeParticles(particle_list);
  	return 0;
 }
