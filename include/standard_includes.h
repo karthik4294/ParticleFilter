@@ -1,6 +1,10 @@
 #ifndef STANDARD_INCLUDES_H
 #define STANDARD_INCLUDES_H
 
+#ifndef PI
+#define PI 3.141592653589
+#endif
+
 #include <iostream>
 #include <vector>
 #include <string>
