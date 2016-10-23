@@ -8,7 +8,7 @@
 namespace sensor_model {
 	class Lidar {
 		//public functions
-		Lidar(map::Map* map, int num_rays, double double max_range, int n_bins, double min_angle, double max_angle);
+		Lidar(map::Map* map, int num_rays, double max_range, int n_bins, double min_angle, double max_angle);
 		//private variables
 
 		//map
