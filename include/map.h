@@ -28,6 +28,9 @@ public:
 	std::vector<std::pair<int, int>> getFreeSpace(){
 		return free_space_;
 	}
+	
+	void visualizeParticles(vector<ParticleState>* particle_list);
+  	void visualizePoints(vector<Mat>* points_list);
 
 private:
 
@@ -37,7 +40,4 @@ private:
 	int grid_size;
 	Mat grid;
 	std::vector<std::pair<int, int>> free_space_;
-
-
-	void visualizeParticles(vector<ParticleState>* particle_list);
 };
