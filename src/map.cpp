@@ -84,7 +84,7 @@ void Map::displayMap(){
 
 void Map::visualizeParticles(vector<ParticleState>* particle_list) {
 
-  Mat temp_grid = grid;
+  Mat temp_grid = grid.clone();
   Point pt;
   cv::Scalar red(255, 0, 0);
 
