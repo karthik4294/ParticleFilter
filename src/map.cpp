@@ -99,3 +99,23 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list) {
   waitKey(0);                                          // Wait for a keystroke in the window
   destroyWindow( "Display window");
 }
+
+void Map::visualizePoints(vector<Mat>* points_list) {
+
+  Mat temp_grid = grid.clone();
+  Point pt;
+  cv::Scalar red(255, 0, 0);
+
+  for(std::vector<Mat>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
+    Mat m = *it;
+    //printf("%f", m.at<float>(0,0));
+    pt = Point(m.at<float>(0,0), m.at<float>(0,1));
+    circle(temp_grid, pt, 2, red);
+  }
+
+  namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+  imshow( "Display window", temp_grid);                   // Show our image inside it.
+
+  waitKey(0);                                          // Wait for a keystroke in the window
+  destroyWindow( "Display window");
+}

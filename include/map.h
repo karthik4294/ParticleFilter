@@ -29,4 +29,5 @@ public:
 	void getMap(Map* map);
 
   void visualizeParticles(vector<ParticleState>* particle_list);
+  void visualizePoints(vector<Mat>* points_list);
 };
