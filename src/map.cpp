@@ -1,7 +1,6 @@
 #include <map.h>
 #include <particle_state.h>
 
-
 using namespace cv;
 using namespace ps;
 
@@ -47,8 +46,10 @@ void Map::readMap(std::string file){
   while ( fin >> val){
     int temprow = count / size_x;
     int tempcol = count % size_x;
-    grid.at<double>(temprow, tempcol) = val;
+    grid.at<double>((size_y - 1) - tempcol, temprow) = val;
     //printf(" %f ", val);
+    if (val == 0)
+      free_space_.push_back(std::make_pair((size_y - 1) - tempcol, temprow));
     count++;
   }
 

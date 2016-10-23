@@ -28,7 +28,8 @@ add_library(particleFilter
             src/sensor_model.cpp
             src/robot_state.cpp
             src/particle_state.cpp
-            src/util_functions.cpp)
+            src/util_functions.cpp
+            src/sampler.cpp)
 
 target_link_libraries(particleFilter ${LIBRARIES_LIST})
 

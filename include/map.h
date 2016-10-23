@@ -10,23 +10,34 @@ using namespace cv;
 using namespace std;
 using namespace ps;
 
-
 class Map{
 
 public:
 
 	Map(std::string filename);
 
+	void readMap(std::string file);
+	void printMap();
+	void displayMap();
+	Map *getMap(){
+		return this;
+	}
+	Mat getGrid(){
+		return grid;
+	}
+	std::vector<std::pair<int, int>> getFreeSpace(){
+		return free_space_;
+	}
+
+private:
+
 	int size_x;
 	int size_y;
 	int res;
 	int grid_size;
 	Mat grid;
+	std::vector<std::pair<int, int>> free_space_;
 
-	void readMap(std::string file);
-	void printMap();
-	void displayMap();
-	void getMap(Map* map);
 
-  void visualizeParticles(vector<ParticleState>* particle_list);
+	void visualizeParticles(vector<ParticleState>* particle_list);
 };
