@@ -13,14 +13,14 @@ namespace rs{
 		RobotState(){}
 		RobotState(double x, double y, double theta);
 		
-		void setX(double x);
-		void setY(double y);
-		void setTheta(double theta);
+		void x(double x);
+		void y(double y);
+		void theta(double theta);
 		double x();
 		double y();
 		double theta();
 		
-		RobotState *rotate(double theta);
+		RobotState rotate(double theta);
 
 	private:
 

@@ -11,15 +11,15 @@ theta_(theta)
 	utils_ = new utils::UtilFunctions();
 }
 
-void RobotState::setX(double x){
+void RobotState::x(double x){
 	x_ = x;
 }
 
-void RobotState::setY(double y){
+void RobotState::y(double y){
 	y_ = y;
 }
 
-void RobotState::setTheta(double theta){
+void RobotState::theta(double theta){
 	theta_ = theta;
 }
 
@@ -35,16 +35,16 @@ double RobotState::theta(){
 	return theta_;
 }
 
-RobotState* RobotState::rotate(double theta){
+RobotState RobotState::rotate(double theta){
 
-	RobotState* trans_state = new RobotState;
+	RobotState trans_state;
 	
 	Eigen::Vector3d vec(x_, y_, 0);	
 	Eigen::Vector3d trans_vec = utils_->rotateVector(vec, theta);
 
-	trans_state->setX(trans_vec[0]);
-	trans_state->setY(trans_vec[1]);
-	trans_state->setTheta(theta_);
+	trans_state.x(trans_vec[0]);
+	trans_state.y(trans_vec[1]);
+	trans_state.theta(theta_);
 
 	return trans_state;
 }
