@@ -44,7 +44,7 @@ RobotState* RobotState::rotateVector(double theta){
 
 	trans_state->setX(trans_vec[0]);
 	trans_state->setX(trans_vec[1]);
-	trans_state->setX(trans_vec[2]);
+	trans_state->setX(theta_);
 
 	return trans_state;
 }
