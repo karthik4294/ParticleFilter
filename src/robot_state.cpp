@@ -8,7 +8,7 @@ x_(x),
 y_(y),
 theta_(theta)
 {
-
+	utils_ = new utils::UtilFunctions();
 }
 
 void RobotState::setX(double x){
@@ -23,28 +23,28 @@ void RobotState::setTheta(double theta){
 	theta_ = theta;
 }
 
-double RobotState::getX(){
+double RobotState::x(){
 	return x_;
 }
 
-double RobotState::getY(){
+double RobotState::y(){
 	return y_;
 }
 
-double RobotState::getTheta(){
+double RobotState::theta(){
 	return theta_;
 }
 
-RobotState* RobotState::rotateVector(double theta){
+RobotState* RobotState::rotate(double theta){
 
 	RobotState* trans_state = new RobotState;
 	
 	Eigen::Vector3d vec(x_, y_, 0);	
-	Eigen::Vector3d trans_vec = utils::rotateVector(vec, theta);
+	Eigen::Vector3d trans_vec = utils_->rotateVector(vec, theta);
 
 	trans_state->setX(trans_vec[0]);
-	trans_state->setX(trans_vec[1]);
-	trans_state->setX(theta_);
+	trans_state->setY(trans_vec[1]);
+	trans_state->setTheta(theta_);
 
 	return trans_state;
 }

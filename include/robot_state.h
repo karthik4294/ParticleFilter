@@ -16,11 +16,11 @@ namespace rs{
 		void setX(double x);
 		void setY(double y);
 		void setTheta(double theta);
-		double getX();
-		double getY();
-		double getTheta();
+		double x();
+		double y();
+		double theta();
 		
-		RobotState *rotateVector(double theta);
+		RobotState *rotate(double theta);
 
 	private:
 
@@ -28,6 +28,8 @@ namespace rs{
 		double x_;
 		double y_;
 		double theta_;
+
+		utils::UtilFunctions *utils_;
 
 	};
 

@@ -26,7 +26,8 @@ add_library(particleFilter
 	    	src/test.cpp
 	    	src/map_parser.cpp
             src/sensor_model.cpp
-            src/robot_state.cpp)
+            src/robot_state.cpp
+            src/util_functions.cpp)
 
 target_link_libraries(particleFilter ${LIBRARIES_LIST})
 
