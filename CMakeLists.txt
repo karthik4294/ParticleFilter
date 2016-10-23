@@ -18,7 +18,8 @@ include_directories(include)
 
 add_library(particleFilter
 	    	src/test.cpp
-	    	src/map_parser.cpp)
+	    	src/map_parser.cpp
+                src/sensor_model.cpp)
 
 target_link_libraries(particleFilter ${Boost_LIBRARIES} ${OpenCV_LIBRARIES})
 
