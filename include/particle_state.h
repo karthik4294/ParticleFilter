@@ -41,6 +41,9 @@ namespace ps{
 
 		utils::UtilFunctions *utils_;
 
+		//Fill in ray ranges from ray-casting here
+		std::vector<double> ranges_;
+
 	};
 }
 
