@@ -1,3 +1,6 @@
+#ifndef STANDARD_INCLUDES_H
+#define STANDARD_INCLUDES_H
+
 #include <iostream>
 #include <vector>
 #include <string>
@@ -10,3 +13,5 @@
 #include <algorithm>
 #include <ctime>
 #include <unordered_map>
+
+#endif
