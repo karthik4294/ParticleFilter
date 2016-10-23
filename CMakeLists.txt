@@ -10,18 +10,25 @@ list(APPEND CMAKE_CXX_FLAGS "-std=c++11")
 
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
+list(APPEND LIBRARIES_LIST ${Boost_LIBRARIES} )
 
 find_package(OpenCV 2 REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
+list(APPEND LIBRARIES_LIST ${OpenCV_LIBRARIES} )
+
+find_package(PkgConfig)
+pkg_search_module(Eigen3 REQUIRED eigen3)
+include_directories(${EIGEN_INCLUDE_DIRS})
 
 include_directories(include)
 
 add_library(particleFilter
 	    	src/test.cpp
 	    	src/map_parser.cpp
-                src/sensor_model.cpp)
+            src/sensor_model.cpp
+            src/robot_state.cpp)
 
-target_link_libraries(particleFilter ${Boost_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(particleFilter ${LIBRARIES_LIST})
 
 add_executable(runTest src/run_test.cpp)
 target_link_libraries(runTest particleFilter)
