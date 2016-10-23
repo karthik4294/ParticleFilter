@@ -24,7 +24,7 @@ namespace map {
 		void readMap(std::string file);
 		void printMap();
 		void displayMap();
-		void getMap(Map* map);
+		void getMap(Map* &map);
 
 	private:
 

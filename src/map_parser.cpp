@@ -82,7 +82,7 @@ namespace map {
 		cv::waitKey(0);
 	}
 
-	void MapParser::getMap(Map *map){
+	void MapParser::getMap(Map* &map){
 
 		map = map_;
 	}

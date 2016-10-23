@@ -1,16 +1,16 @@
 //Sensor model
 #pragma once
-#include "standard_includes"
-#include 
+#include <standard_includes.h>
+#include <map_parser.h>
 
 namespace sensor_model {
-	class lidar {
+	class Lidar {
 		//public functions
-		lidar();
+		Lidar(map::Map* map);
 		//private variables
 
-		//Resolution of the map
-		map::Map
+		//map
+		map::Map* map_;
 
 		//
 
