@@ -25,6 +25,7 @@ include_directories(include)
 add_library(particleFilter
 	    	src/test.cpp
         src/map.cpp
+        src/log.cpp
             src/sensor_model.cpp
             src/robot_state.cpp
             src/particle_state.cpp
