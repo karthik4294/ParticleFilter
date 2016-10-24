@@ -24,7 +24,7 @@ namespace data {
     private:
         std::vector<lidar*> lidarScans_;
         std::map<double, odom*> odomVals_;
-    	std::ifstream fin_;
+    	//std::ifstream fin_;
 
     };
 }
