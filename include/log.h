@@ -19,7 +19,7 @@ namespace data {
 
     public:
         Log(std::string filename);
-        void getLidar(int iter, lidar* lidar_val) const;
+        void getLidar(int iter, lidar*& lidar_val) const;
         void getOdom(int iter, std::vector<odom*>& odoms) const;
     private:
         std::vector<lidar*> lidarScans_;

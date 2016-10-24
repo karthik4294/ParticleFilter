@@ -49,7 +49,7 @@ namespace data {
         fin_.close();
     }
 
-    void Log::getLidar (int iter, lidar* lidar_val) const {
+    void Log::getLidar (int iter, lidar*& lidar_val) const {
         
         if(iter >= lidarScans_.size()) {
             printf("[ERROR] Wrong access to lidar scans");
