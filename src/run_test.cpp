@@ -43,5 +43,9 @@ int main(int argc , char *argv[]){
 
   map->visualizeParticles(&new_particles);
 
+  new_particles = mm->applyMotionModel(new_particles, 0);
+
+  map->visualizeParticles(&new_particles);
+
   return 0;
 }
