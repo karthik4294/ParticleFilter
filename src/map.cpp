@@ -48,11 +48,14 @@ void Map::readMap(std::string file){
     int tempcol = count % size_x;
     grid.at<double>((size_y - 1) - tempcol, temprow) = val;
     //printf(" %f ", val);
-    if (val == 0)
-      free_space_.push_back(std::make_pair((size_y - 1) - tempcol, temprow));
+    if (val == 0.0){
+      double x = (size_y - 1) - tempcol;
+      double y = temprow;
+      for(double j = 1; j < res; j++)
+        free_space_.push_back(std::make_pair((x*res) + j, (y*res) + j));
+    }
     count++;
   }
-
 }
 
 void Map::printMap(){
@@ -86,12 +89,16 @@ void Map::displayMap(){
 void Map::visualizeParticles(vector<ParticleState>* particle_list) {
 
   Mat temp_grid = grid.clone();
+  Mat grid_rgb(temp_grid.size(), CV_8UC3);
+  cvtColor(temp_grid, grid_rgb, CV_GRAY2RGB);
+
   Point pt;
   cv::Scalar red(255, 0, 0);
 
   for(std::vector<ParticleState>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
+    std::cout << int(it->x()/res) << int(it->y()/res) << std::endl;  
     pt = Point(int(it->x()/res), int(it->y()/res)); // divided by res as one pixel in visualization = 10 units of distance
-    circle(temp_grid, pt, 2, red);
+    circle(grid_rgb, pt, 2, red);
   }
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.

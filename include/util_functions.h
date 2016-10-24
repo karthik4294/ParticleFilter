@@ -13,7 +13,7 @@ namespace utils{
 			UtilFunctions();
 			Eigen::Matrix3d getRotationMatrix(double roll, double yaw, double pitch);
 			Eigen::Vector3d rotateVector(Eigen::Vector3d vec, double yaw);
-
+			Eigen::Vector3d tranformVector(Eigen::Vector3d vec, double x, double y, double yaw);
 	};
 
 

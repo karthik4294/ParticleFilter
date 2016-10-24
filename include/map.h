@@ -3,6 +3,8 @@
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+
 
 #include <particle_state.h>
 
@@ -25,7 +27,7 @@ public:
 	Mat getGrid(){
 		return grid;
 	}
-	std::vector<std::pair<int, int>> getFreeSpace(){
+	std::vector<std::pair<double, double>> getFreeSpace(){
 		return free_space_;
 	}
 	
@@ -39,5 +41,5 @@ private:
 	int res;
 	int grid_size;
 	Mat grid;
-	std::vector<std::pair<int, int>> free_space_;
+	std::vector<std::pair<double, double>> free_space_;
 };

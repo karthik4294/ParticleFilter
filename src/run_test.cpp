@@ -26,8 +26,10 @@ int main(int argc , char *argv[]){
 
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
 
-  std::vector<ps::ParticleState> particles(num_particles);
+  std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  
+
+  map->visualizeParticles(&particles);
 
   return 0;
 }
