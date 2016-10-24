@@ -17,6 +17,8 @@ Map::Map(std::string filename)
   grid_disp_ = Mat::zeros(size_x, size_y, CV_8UC3);
   // parse the map from dat file
   readMap(filename);
+
+  rangemax = 170;
 }
 
 void Map::readMap(std::string file){
@@ -198,7 +200,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
 void Map::visualizeIdealLidar(ParticleState p) {
 
   float theta;
-  float rangemax = 100;
+
   int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
   double theta0 = p.theta();
   int x1, y1, tx, ty;
@@ -234,7 +236,7 @@ void Map::visualizeIdealLidar(ParticleState p) {
 vector<int> Map::getIdealLidar(ParticleState p) {
 
     float theta;
-    float rangemax = 100;
+
     int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
     double theta0 = p.theta();
     int x1, y1, tx, ty;

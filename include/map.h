@@ -47,5 +47,6 @@ class Map{
     int grid_size;
     Mat grid;
     Mat grid_disp_;
+    int rangemax;
     std::vector<std::pair<double, double>> free_space_;
 };
