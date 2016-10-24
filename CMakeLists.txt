@@ -31,15 +31,16 @@ add_library(particleFilter
             src/robot_state.cpp
             src/particle_state.cpp
             src/util_functions.cpp
+            src/test_raytrace.cpp
             src/sampler.cpp)
 
 target_link_libraries(particleFilter ${LIBRARIES_LIST})
 
 add_executable(runTest src/run_test.cpp)
-#add_executable(testRayTrace src/test_raytrace.cpp)
+add_executable(testRayTrace src/test_raytrace.cpp)
 
 target_link_libraries(runTest particleFilter)
-#target_link_libraries(testRayTrace particleFilter)
+target_link_libraries(testRayTrace particleFilter)
 
 
 	
