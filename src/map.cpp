@@ -181,13 +181,13 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
     y = round(y0 + t*(y1-y0));
 
     //printf("at step = %d points are x=%d y=%d t=%f", step,  x, y, t);
-    //printf("grid value is =%f\n", grid.at<double>(x,y));
+    printf("grid value is =%f\n", grid.at<double>(y,x));
 
-    if (grid.at<double>(x,y) >= 1) {
-      //// collided with obstacle
-      //break;
-      printf("FUCK");
-    }
+    //if (grid.at<double>(x,y) >= 1) {
+      ////// collided with obstacle
+      ////break;
+      //printf("FUCK");
+    //}
 
     result.push_back(make_pair(x,y));
   }
@@ -198,7 +198,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
 vector<int> Map::raytrace(ParticleState p) {
 
   float theta;
-  float rangemax = 100;
+  float rangemax = 30;
   int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
   double theta0 = p.theta();
   int x1, y1, tx, ty;
@@ -207,9 +207,9 @@ vector<int> Map::raytrace(ParticleState p) {
   vector<pair<int,int>> single_ray;
   vector<pair<int,int>> all_rays;
 
-  for (theta = 90; theta >= -90; theta--){
-    //{
-    //theta = 0;
+  //for (theta = 90; theta >= -90; theta--){
+    {
+    theta = 0;
 
     x1 = rangemax * cos(theta * PI/180);
     y1 = rangemax * sin(theta * PI/180);
