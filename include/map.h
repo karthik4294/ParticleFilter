@@ -14,33 +14,35 @@ using namespace ps;
 
 class Map{
 
-public:
+  public:
 
-	Map(std::string filename);
+    Map(std::string filename);
 
-	void readMap(std::string file);
-	void printMap();
-	void displayMap();
-	Map *getMap(){
-		return this;
-	}
-	Mat getGrid(){
-		return grid;
-	}
-	std::vector<std::pair<double, double>> getFreeSpace(){
-		return free_space_;
-	}
-	
-	void visualizeParticles(vector<ParticleState>* particle_list);
-  	void visualizePoints(vector<Mat>* points_list);
+    void readMap(std::string file);
+    void printMap();
+    void displayMap();
+    Map *getMap(){
+      return this;
+    }
+    Mat getGrid(){
+      return grid;
+    }
+    std::vector<std::pair<double, double>> getFreeSpace(){
+      return free_space_;
+    }
 
-private:
+    void visualizeParticles(vector<ParticleState>* particle_list);
+    void visualizePoints(vector<pair<int,int>>* points_list);
+    vector<pair<int,int>> interpolate(int x1, int y1, int x2, int y2);
+    vector<int> raytrace(ParticleState p);
 
-	int size_x;
-	int size_y;
-	int res;
-	int grid_size;
-	Mat grid;
-	Mat grid_disp_;
-	std::vector<std::pair<double, double>> free_space_;
+  private:
+
+    int size_x;
+    int size_y;
+    int res;
+    int grid_size;
+    Mat grid;
+    Mat grid_disp_;
+    std::vector<std::pair<double, double>> free_space_;
 };

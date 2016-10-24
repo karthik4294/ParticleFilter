@@ -116,17 +116,16 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list) {
   destroyWindow( "Display window");
 }
 
-void Map::visualizePoints(vector<Mat>* points_list) {
+void Map::visualizePoints(vector<pair<int,int>>* points_list) {
 
   Mat temp_grid = grid.clone();
   Point pt;
   cv::Scalar red(255, 0, 0);
 
-  for(std::vector<Mat>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
-    Mat m = *it;
+  for(std::vector<pair<int,int>>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
     //printf("%f", m.at<float>(0,0));
-    pt = Point(m.at<float>(0,0), m.at<float>(0,1));
-    circle(temp_grid, pt, 2, red);
+    pt = Point(it->first, it->second);
+    circle(temp_grid, pt, 1, red);
   }
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
@@ -134,4 +133,84 @@ void Map::visualizePoints(vector<Mat>* points_list) {
 
   waitKey(0);                                          // Wait for a keystroke in the window
   destroyWindow( "Display window");
+}
+
+
+vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
+
+  vector<pair<int, int>> result;
+
+  float dx = abs(x1 - x0);
+  float dy = abs(y1 - y0);
+
+  float dist = max(dx, dy);
+  printf("max dist=%f\n", dist);
+
+  float t;
+  int x, y;
+
+  for (int step = 0; step <= dist ; step++) {
+    if (dist == 0)
+      t = 0.0;
+    else t = step / dist;
+
+    x = round(x0 + t*(x1-x0));
+    y = round(y0 + t*(y1-y0));
+
+    //printf("at step = %d points are x=%d y=%d t=%f", step,  x, y, t);
+    //printf("grid value is =%f\n", grid.at<double>(x,y));
+
+    if (grid.at<double>(x,y) >= 1) {
+    //// collided with obstacle
+      //break;
+      printf("FUCK");
+    }
+
+    result.push_back(make_pair(x,y));
+  }
+
+  return result;
+}
+
+vector<int> Map::raytrace(ParticleState p) {
+
+  float theta;
+  float rangemax = 100;
+  int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
+  double theta0 = p.theta();
+  int x1, y1, tx, ty;
+  printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
+
+  vector<pair<int,int>> single_ray;
+  vector<pair<int,int>> all_rays;
+
+  for (theta = 90; theta >= -90; theta--){
+  //{
+  //theta = 0;
+
+    x1 = rangemax * cos(theta * PI/180);
+    y1 = rangemax * sin(theta * PI/180);
+
+
+    Eigen::Vector2d point(x1, y1);
+    Eigen::Rotation2Dd t(theta0);
+    t.toRotationMatrix();
+
+    Eigen::Vector2d new_point = t * point;
+
+    tx = new_point(0) + x0;
+    ty = new_point(1) + y0;
+
+    printf("tx=%d, ty=%d\n", tx, ty);
+    printf("x1=%d, y1=%d\n", x1, y1);
+
+    single_ray = interpolate(x0, y0, tx, ty);
+    all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());
+  }
+
+    visualizePoints(&all_rays);
+  //
+  vector<int> result;
+  return result;
+
 }
