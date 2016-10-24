@@ -18,10 +18,12 @@ namespace sp{
 
 	private:
 
+		int ang_res_;
+
 		Map *map_;
 		int num_particles_;
-		std::vector<std::pair<int, int>> free_space_;
-		std::vector<std::tuple<int, int, int>> full_free_space_;
+		std::vector<std::pair<double, double>> free_space_;
+		std::vector<std::tuple<double, double , double>> full_free_space_;
 
 	};
 
