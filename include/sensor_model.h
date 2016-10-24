@@ -12,9 +12,11 @@ namespace sensor_model {
 		//public functions
 		
 		LidarModel(double max_range, double std_dev, double z_hit,
-			       double z_short, double z_max, double z_rand);
+			       double z_short, double lambda_short, double z_max,
+			       double z_rand);
 		
-		void updateWeight(ps::ParticleState* particle);
+		void updateWeight(ps::ParticleState* particle,
+						  const std::vector<double>* lidar_ranges);
 
 		private:
 
@@ -29,8 +31,10 @@ namespace sensor_model {
 		//Weight for correct hits
 		double z_hit_;
 
-		//Weight for transient obstacles
+		//Weight for transient obstacles and the intrinsic parameter to tune
+		//it
 		double z_short_;
+		double lambda_short_;
 
 		//Weight for max_range readings
 		double z_max_;
@@ -41,16 +45,16 @@ namespace sensor_model {
 		//Private functions
 
 		//get p_hit
-		double getPHit();
+		double getPHit(double ideal_range, double lidar_range);
 
 		//get p_short
-		double getPShort();
+		double getPShort(double ideal_range, double lidar_range);
 
 		//get p_max
-		double getPMax();
+		double getPMax(double lidar_range);
 
 		//get p_rand
-		double getPRand();
+		double getPRand(double lidar_range);
 
 	};
 }
