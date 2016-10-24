@@ -48,5 +48,6 @@ class Map{
     Mat grid;
     Mat grid_disp_;
     int rangemax;
+    float lidar_xoffset;
     std::vector<std::pair<double, double>> free_space_;
 };

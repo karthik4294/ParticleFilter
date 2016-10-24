@@ -19,6 +19,7 @@ Map::Map(std::string filename)
   readMap(filename);
 
   rangemax = 170;
+  lidar_xoffset = 25;
 }
 
 void Map::readMap(std::string file){
@@ -201,7 +202,7 @@ void Map::visualizeIdealLidar(ParticleState p) {
 
   float theta;
 
-  int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
+  int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
   double theta0 = p.theta();
   int x1, y1, tx, ty;
   printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
@@ -237,7 +238,7 @@ vector<int> Map::getIdealLidar(ParticleState p) {
 
     float theta;
 
-    int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
+    int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
     double theta0 = p.theta();
     int x1, y1, tx, ty;
     printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
