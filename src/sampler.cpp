@@ -22,7 +22,7 @@ void Sampler::constructFullFreeSpace(){
 	}
 }
 
-void Sampler::sampleUniform(std::vector<ps::ParticleState> ps){
+void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
 
 	std::default_random_engine gen;
   	std::uniform_int_distribution<int> dist(0, full_free_space_.size());

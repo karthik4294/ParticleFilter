@@ -41,5 +41,6 @@ private:
 	int res;
 	int grid_size;
 	Mat grid;
+	Mat grid_disp_;
 	std::vector<std::pair<double, double>> free_space_;
 };

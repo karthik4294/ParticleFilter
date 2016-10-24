@@ -14,7 +14,7 @@ Map::Map(std::string filename)
 
   // initialize
   grid = Mat::zeros(size_x, size_y, CV_64FC1);
-
+  grid_disp_ = Mat::zeros(size_x, size_y, CV_8UC3);
   // parse the map from dat file
   readMap(filename);
 }
@@ -47,8 +47,17 @@ void Map::readMap(std::string file){
     int temprow = count / size_x;
     int tempcol = count % size_x;
     grid.at<double>((size_y - 1) - tempcol, temprow) = val;
+    if(val == -1) {
+      grid_disp_.at<Vec3b>((size_y - 1) - tempcol, temprow, 0) = Vec3b(0,0,0);
+    }
+    else {
+      int b = (val)*255;
+      int g = (val)*255;
+      int r = (val)*255;
+      grid_disp_.at<Vec3b>((size_y - 1) - tempcol, temprow, 0) = Vec3b(b,g,r);
+    }
     //printf(" %f ", val);
-    if (val == 0.0){
+    if (val == 1.0){
       double x = (size_y - 1) - tempcol;
       double y = temprow;
       for(double j = 1; j < res; j++)
@@ -81,28 +90,27 @@ void Map::printMap(){
 void Map::displayMap(){
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-  imshow( "Display window", grid);                   // Show our image inside it.
-
+  imshow( "Display window", grid_disp_);                   // Show our image inside it.
   waitKey(0);                                          // Wait for a keystroke in the window
 }
 
 void Map::visualizeParticles(vector<ParticleState>* particle_list) {
 
-  Mat temp_grid = grid.clone();
-  Mat grid_rgb(temp_grid.size(), CV_8UC3);
-  cvtColor(temp_grid, grid_rgb, CV_GRAY2RGB);
+  Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
+  //cvtColor(temp_grid, grid_rgb, CV_GRAY2RGB);
 
   Point pt;
-  cv::Scalar red(255, 0, 0);
-
+  cv::Scalar red(0, 0, 255);
+  printf("Particle list size is %zu \n", particle_list->size());
   for(std::vector<ParticleState>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
-    std::cout << int(it->x()/res) << int(it->y()/res) << std::endl;  
-    pt = Point(int(it->x()/res), int(it->y()/res)); // divided by res as one pixel in visualization = 10 units of distance
+    //std::cout << int(it->x()/res) << int(it->y()/res) << std::endl;  
+    pt = Point(int(it->y()/res), int(it->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
     circle(grid_rgb, pt, 2, red);
+
   }
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-  imshow( "Display window", temp_grid);                   // Show our image inside it.
+  imshow( "Display window", grid_rgb);                   // Show our image inside it.
 
   waitKey(0);                                          // Wait for a keystroke in the window
   destroyWindow( "Display window");

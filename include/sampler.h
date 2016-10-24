@@ -13,7 +13,7 @@ namespace sp{
 	public:
 
 		Sampler(Map *map, int num_particles);
-		void sampleUniform(std::vector<ps::ParticleState> ps);
+		void sampleUniform(std::vector<ps::ParticleState>& ps);
 		void constructFullFreeSpace();
 
 	private:

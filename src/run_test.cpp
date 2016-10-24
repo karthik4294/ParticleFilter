@@ -1,14 +1,17 @@
 #include <standard_includes.h>
 #include <map.h>
+#include <log.h>
 #include <robot_state.h>
 #include <particle_state.h>
 #include <sampler.h>
 
 int main(int argc , char *argv[]){
 
-  Map *map = new Map("../data/map/wean.dat");	
+  Map *map = new Map("../../data/map/wean.dat");	
+  data::Log* log = new data::Log("../../data/robotdata1.log");
+  //map->displayMap();
 
-  // ps::ParticleState particle_state(2.0, 3.0, 0.0, 5.0);
+  //ps::ParticleState particle_state(2.0, 3.0, 0.0, 5.0);
 
   // ps::ParticleState news = particle_state.rotate(M_PI);
 
