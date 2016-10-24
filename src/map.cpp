@@ -118,18 +118,18 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list) {
 
 void Map::visualizePoints(vector<pair<int,int>>* points_list) {
 
-  Mat temp_grid = grid.clone();
+  Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
+
   Point pt;
-  cv::Scalar red(255, 0, 0);
+  cv::Scalar color(255, 0, 0);
 
   for(std::vector<pair<int,int>>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
-    //printf("%f", m.at<float>(0,0));
     pt = Point(it->first, it->second);
-    circle(temp_grid, pt, 1, red);
+    circle(grid_rgb, pt, 1, color);
   }
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-  imshow( "Display window", temp_grid);                   // Show our image inside it.
+  imshow( "Display window", grid_rgb);                   // Show our image inside it.
 
   waitKey(0);                                          // Wait for a keystroke in the window
   destroyWindow( "Display window");
