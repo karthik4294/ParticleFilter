@@ -182,13 +182,13 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
     y = round(y0 + t*(y1-y0));
 
     printf("at step = %d points are x=%d y=%d t=%f ", step,  x, y, t);
-    printf("grid value is =%f\n", grid.at<double>(x,y));
+    printf("grid value is =%f\n", grid.at<double>(x,y)); // 
 
-    //if (grid.at<double>(x,y) >= 1) {
-      ////// collided with obstacle
-      ////break;
-      //printf("FUCK");
-    //}
+    if (grid.at<double>(x,y) <= 0) {
+      // collided with obstacle
+      break;
+      printf("Collision detected at x=%d y=%d\n", x, y);
+    }
 
     result.push_back(make_pair(x,y));
   }
@@ -208,6 +208,7 @@ vector<int> Map::raytrace(ParticleState p) {
   vector<pair<int,int>> single_ray;
   vector<pair<int,int>> all_rays;
 
+  vector<int> ideal_lidar;
   //for (theta = 90; theta >= -90; theta--){
     {
     theta = 0;
@@ -230,11 +231,23 @@ vector<int> Map::raytrace(ParticleState p) {
 
     single_ray = interpolate(x0, y0, tx, ty);
     all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());
+
+    int collision_x = single_ray.back().first;
+    int collision_y= single_ray.back().second;
+
+    int distance_x = collision_x-x0;
+
+    int distance_y = collision_y- y0; 
+
+    
+    int ray_dist = sqrt( (distance_x * distance_x) + (distance_y * distance_y));
+    ideal_lidar.push_back(ray_dist);
+
+
   }
 
   visualizeRayTrace(&p, &all_rays);
   //
-  vector<int> result;
-  return result;
+  return ideal_lidar;
 
   }
