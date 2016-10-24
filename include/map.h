@@ -36,7 +36,8 @@ class Map{
     void visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* points_list);
 
     vector<pair<int,int>> interpolate(int x1, int y1, int x2, int y2);
-    vector<int> raytrace(ParticleState p);
+    void visualizeIdealLidar(ParticleState p);
+    vector<int> getIdealLidar(ParticleState p);
 
   private:
 

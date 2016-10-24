@@ -9,8 +9,17 @@
 int main(int argc , char *argv[]){
 
   Map *map = new Map("../data/map/wean.dat");	
-  ps::ParticleState new_particle(2000.0, 3000.0, 1.57/2, 5.0);
-  map->raytrace(new_particle);
+  ps::ParticleState new_particle(3800.0, 3000.0, 0, 5.0);
+  //map->visualizeIdealLidar(new_particle);
+  vector <int> lidar_reading;
+  lidar_reading = map->getIdealLidar(new_particle);
+
+  int counter = 0;
+  for(std::vector<int>::iterator it = lidar_reading.begin(); it != lidar_reading.end(); ++it) {
+    printf("lidar[%d] = %d\n", counter, *it);
+    counter++;
+  }
+  map->visualizeIdealLidar(new_particle);
 
   return 0;
 }

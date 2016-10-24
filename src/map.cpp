@@ -148,7 +148,7 @@ void Map::visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* poin
 
   for(std::vector<pair<int,int>>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
     pt = Point(it->second, it->first);
-    circle(grid_rgb, pt, 1, color);
+    circle(grid_rgb, pt, 0.5, color);
   }
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
@@ -167,7 +167,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
   float dy = abs(y1 - y0);
 
   float dist = max(dx, dy);
-  printf("max dist=%f\n", dist);
+  //printf("max dist=%f\n", dist);
 
   float t;
   int x, y;
@@ -183,10 +183,10 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
     //printf("at step = %d points are x=%d y=%d t=%f", step,  x, y, t);
     //printf("grid value is =%f\n", grid.at<double>(x,y));
 
-    if (grid.at<double>(x,y) >= 1) {
+    if (grid.at<double>(x,y) == 0.0) {
       //// collided with obstacle
-      //break;
-      printf("FUCK");
+      //printf("collided");
+      break;
     }
 
     result.push_back(make_pair(x,y));
@@ -195,7 +195,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
   return result;
 }
 
-vector<int> Map::raytrace(ParticleState p) {
+void Map::visualizeIdealLidar(ParticleState p) {
 
   float theta;
   float rangemax = 100;
@@ -207,7 +207,7 @@ vector<int> Map::raytrace(ParticleState p) {
   vector<pair<int,int>> single_ray;
   vector<pair<int,int>> all_rays;
 
-  for (theta = 90; theta >= -90; theta--){
+  for (theta = 90; theta >= -90; theta--) {
     //{
     //theta = 0;
 
@@ -224,16 +224,57 @@ vector<int> Map::raytrace(ParticleState p) {
     tx = new_point(0) + x0;
     ty = new_point(1) + y0;
 
-    printf("tx=%d, ty=%d\n", tx, ty);
-    printf("x1=%d, y1=%d\n", x1, y1);
-
     single_ray = interpolate(x0, y0, tx, ty);
     all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());
   }
 
   visualizeRayTrace(&p, &all_rays);
-  //
-  vector<int> result;
-  return result;
-
   }
+
+vector<int> Map::getIdealLidar(ParticleState p) {
+
+    float theta;
+    float rangemax = 100;
+    int x0 = (int) p.x() / res, y0 = (int) p.y() / res;
+    double theta0 = p.theta();
+    int x1, y1, tx, ty;
+    printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
+
+    vector<pair<int,int>> single_ray;
+
+    vector<int> lidar_readings;
+    int dx, dy;
+    int current_dist;
+
+    for (theta = 90; theta >= -90; theta--) 
+    {
+      //theta = 0;
+
+      x1 = rangemax * cos(theta * PI/180);
+      y1 = rangemax * sin(theta * PI/180);
+
+
+      Eigen::Vector2d point(x1, y1);
+      Eigen::Rotation2Dd t(theta0);
+      t.toRotationMatrix();
+
+      Eigen::Vector2d new_point = t * point;
+
+      tx = new_point(0) + x0;
+      ty = new_point(1) + y0;
+
+      printf("tx=%d, ty=%d\n", tx, ty);
+      printf("x1=%d, y1=%d\n", x1, y1);
+
+      single_ray = interpolate(x0, y0, tx, ty);
+
+      // calculate lidar distance after collision or max
+      dx = single_ray.back().first - x0;
+      dy = single_ray.back().second - y0;
+      current_dist = sqrt(dx*dx + dy*dy);
+      lidar_readings.push_back(current_dist);
+      
+    }
+
+    return lidar_readings;
+}
