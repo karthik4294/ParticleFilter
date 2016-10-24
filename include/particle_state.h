@@ -28,6 +28,7 @@ namespace ps{
 		double theta();		
 		RobotState robot_state();
 		double weight();
+		const std::vector<double>* ranges();
 		
 		ParticleState rotate(double theta);
 
@@ -42,7 +43,7 @@ namespace ps{
 		utils::UtilFunctions *utils_;
 
 		//Fill in ray ranges from ray-casting here
-		std::vector<double> ranges_;
+		std::vector<double>* ranges_;
 
 	};
 }

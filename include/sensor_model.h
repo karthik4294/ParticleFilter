@@ -6,15 +6,51 @@
 #include <map.h>
 
 namespace sensor_model {
-	class Lidar {
+	class LidarModel {
+
+		public:
 		//public functions
-		//Lidar(map::Map* map, int num_rays, double max_range, int n_bins, double min_angle, double max_angle);
-		////private variables
+		
+		LidarModel(double max_range, double std_dev, double z_hit,
+			       double z_short, double z_max, double z_rand);
+		
+		void updateWeight(ps::ParticleState* particle);
 
-		////map
-		//map::Map* map_;
+		private:
 
-		//
+		//Private variables
+
+		//Maximum range of the sensor
+		double max_range_;
+
+		//Standard deviation of the measurements
+		double std_dev_;
+
+		//Weight for correct hits
+		double z_hit_;
+
+		//Weight for transient obstacles
+		double z_short_;
+
+		//Weight for max_range readings
+		double z_max_;
+
+		//Weight for random issues
+		double z_rand_;
+
+		//Private functions
+
+		//get p_hit
+		double getPHit();
+
+		//get p_short
+		double getPShort();
+
+		//get p_max
+		double getPMax();
+
+		//get p_rand
+		double getPRand();
 
 	};
 }
