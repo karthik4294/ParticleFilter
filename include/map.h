@@ -33,6 +33,8 @@ class Map{
 
     void visualizeParticles(vector<ParticleState>* particle_list);
     void visualizePoints(vector<pair<int,int>>* points_list);
+    void visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* points_list);
+
     vector<pair<int,int>> interpolate(int x1, int y1, int x2, int y2);
     vector<int> raytrace(ParticleState p);
 

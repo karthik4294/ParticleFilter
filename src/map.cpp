@@ -135,6 +135,29 @@ void Map::visualizePoints(vector<pair<int,int>>* points_list) {
   destroyWindow( "Display window");
 }
 
+void Map::visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* points_list) {
+
+  Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
+
+  Point pt;
+  cv::Scalar red(0, 0, 255);
+  pt = Point(int(particle->y()/res), int(particle->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
+  circle(grid_rgb, pt, 5, red);
+
+  cv::Scalar color(255, 0, 0);
+
+  for(std::vector<pair<int,int>>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
+    pt = Point(it->second, it->first);
+    circle(grid_rgb, pt, 1, color);
+  }
+
+  namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+  imshow( "Display window", grid_rgb);                   // Show our image inside it.
+
+  waitKey(0);                                          // Wait for a keystroke in the window
+  destroyWindow( "Display window");
+}
+
 
 vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
 
@@ -161,7 +184,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
     //printf("grid value is =%f\n", grid.at<double>(x,y));
 
     if (grid.at<double>(x,y) >= 1) {
-    //// collided with obstacle
+      //// collided with obstacle
       //break;
       printf("FUCK");
     }
@@ -185,8 +208,8 @@ vector<int> Map::raytrace(ParticleState p) {
   vector<pair<int,int>> all_rays;
 
   for (theta = 90; theta >= -90; theta--){
-  //{
-  //theta = 0;
+    //{
+    //theta = 0;
 
     x1 = rangemax * cos(theta * PI/180);
     y1 = rangemax * sin(theta * PI/180);
@@ -208,9 +231,9 @@ vector<int> Map::raytrace(ParticleState p) {
     all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());
   }
 
-    visualizePoints(&all_rays);
+  visualizeRayTrace(&p, &all_rays);
   //
   vector<int> result;
   return result;
 
-}
+  }
