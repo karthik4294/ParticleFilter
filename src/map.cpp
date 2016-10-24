@@ -160,6 +160,7 @@ void Map::visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* poin
 
 
 vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
+  // inouts are in grid space
 
   vector<pair<int, int>> result;
 
@@ -167,7 +168,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
   float dy = abs(y1 - y0);
 
   float dist = max(dx, dy);
-  printf("max dist=%f\n", dist);
+  printf("max dist=%f x0=%d y0=%d x1=%d y1=%d\n", dist, x0, y0, x1, y1);
 
   float t;
   int x, y;
@@ -180,8 +181,8 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
     x = round(x0 + t*(x1-x0));
     y = round(y0 + t*(y1-y0));
 
-    //printf("at step = %d points are x=%d y=%d t=%f", step,  x, y, t);
-    printf("grid value is =%f\n", grid.at<double>(y,x));
+    printf("at step = %d points are x=%d y=%d t=%f ", step,  x, y, t);
+    printf("grid value is =%f\n", grid.at<double>(x,y));
 
     //if (grid.at<double>(x,y) >= 1) {
       ////// collided with obstacle

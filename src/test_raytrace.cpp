@@ -9,7 +9,7 @@
 int main(int argc , char *argv[]){
 
   Map *map = new Map("../data/map/wean.dat");	
-  ps::ParticleState new_particle(3650.0, 3000.0, 0, 5.0);
+  ps::ParticleState new_particle(3900.0, 3000.0, 1.57/2, 5.0);
   map->raytrace(new_particle);
 
   return 0;
