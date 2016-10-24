@@ -11,14 +11,11 @@ int main(int argc , char *argv[]){
   Map *map = new Map("../data/map/wean.dat");	
   
   //Testing if the file loaded ok
-  for (int i = 0; i < 500; i++) {
+  for (int i = 0; i < log->laserCount(); i++) {
     data::lidar* lidar_val;
     log->getLidar(i, lidar_val);
     std::vector<int> ranges = lidar_val->ranges;
-    for(int j = 0; j < ranges.size(); j++) {
-      printf("%d\t", ranges[j]);
-    }
-    printf("\n");
+    printf("%zu\n", ranges.size());
   } 
   
   //map->displayMap();

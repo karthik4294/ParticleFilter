@@ -4,6 +4,8 @@ namespace data {
     
     Log::Log(std::string filename) {
     	std::ifstream fin_(filename);
+    	laserCount_ = 0;
+    	odomCount_ = 0;
         if(fin_.good()) {
         	std::string line_raw;
             while (getline(fin_, line_raw)) {
@@ -24,6 +26,7 @@ namespace data {
                     odom_val->t = std::stod(odom_val_string[3]);
                     //Add it to the map
                     odomVals_[odom_val->t] = odom_val;
+                    odomCount_ ++;
                 }
 
                 else if (data_type == 'L') {
@@ -38,9 +41,11 @@ namespace data {
                                          (std::stoi(lidar_val_string[i]));
                     }
                     lidarScans_.push_back(lidar_val);
+                    laserCount_ ++;
                 }
             }
         }
+        printf("Read %d laser scans and %d odom vals \n", laserCount_, odomCount_);
         fin_.close();
     }
 
