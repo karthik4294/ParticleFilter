@@ -1,29 +1,31 @@
-#pragma once
+#ifndef LOG_H_
+#define LOG_H_
 #include <standard_includes.h>
+namespace data {
+    
+    struct odom {
+        double x;
+        double y;
+        double theta;
+        double t; //time
+    };
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
+    struct lidar {
+        double t; //time
+        std::vector<int> ranges;
+    };
 
-using namespace cv;
-using namespace std;
+    class Log{
 
-class Log{
+    public:
+        Log(std::string filename);
+        void getLidar(int iter, lidar* lidar_val) const;
+        void getOdom(int iter, std::vector<odom*>& odoms) const;
+    private:
+        std::vector<lidar*> lidarScans_;
+        std::map<double, odom*> odomVals_;
+    	std::ifstream fin_;
 
-public:
-
-	int size, count;
-  std::string line, ch;
-  char sensor_type;
-  float val;
-  std::ifstream fin;
-
-	Log(std::string filename);
-
-	void displayLog();
-	void printLog();
-  
-  Mat getNextOdom();
-  Mat getNextLidar();
-  
-
-};
+    };
+}
+#endif

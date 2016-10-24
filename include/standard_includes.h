@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <vector>
-#include <string>
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fstream>
@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <ctime>
 #include <unordered_map>
+#include <map>
 #include <cmath>
 
 #endif

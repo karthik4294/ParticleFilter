@@ -1,92 +1,78 @@
 #include <log.h>
 
-using namespace std;
-using namespace cv;
+namespace data {
+    
+    Log::Log(std::string filename) {
+        fin_.open(filename.c_str());
+        if(fin_.is_open()) {
+            std::string line_raw;
+            while (getline(fin_, line_raw)) {
+                char data_type = line_raw[0];
+                char* line = (char*) line_raw.c_str();
+                if (data_type == 'O') {
+                    char* pch;
+                    //We don't need the first character
+                    pch = strtok(line," "); 
+                    std::vector<std::string> odom_val_string;
+                    odom* odom_val = new odom;
+                    while(pch!=NULL) {
+                        pch = strtok(NULL, " ");
+                        odom_val_string.push_back(pch);
+                    }
+                    odom_val->x = std::stod(odom_val_string[0]);
+                    odom_val->y = std::stod(odom_val_string[1]);
+                    odom_val->theta = std::stod(odom_val_string[2]);
+                    odom_val->t = std::stod(odom_val_string[3]);
+                    //Add it to the map
+                    odomVals_[odom_val->t] = odom_val;
+                }
 
-Log::Log(std::string filename) : fin(filename.c_str()) {
-}
-
-//void Log::readLog(std::string file) {
-
-//// read every line and put it into a datastructure
-//std::ifstream fin(file.c_str());
-
-//std::string line, ch;
-//int count = 0;
-//char sensor_type;
-//double val;
-
-//while (getline(fin, line) && count <1)
-//{
-//istringstream sin(line);
-//std::vector<double> temp_vec;
-
-//sin >> sensor_type;
-//log->sensor_type.push_back(sensor_type);
-//printf("sensor_type is = %c", sensor_type);
-
-
-//while (sin >> val)
-//{
-//temp_vec.push_back(val);
-////printf("double value is = %f", val);
-//}
-
-////printf("loaded all doubles \n");
-//log->sensor_input.push_back(temp_vec);
-//count++;
-//}
-
-//log->size = count;
-
-//printf("size of log = %d\n\n", log->size);
-//}
-
-Mat Log::getNextOdom() {
-
-  Mat odom_reading;
-
-  // loop until we get Odom entry
-  while (getline(fin, line)) {
-    istringstream sin(line);
-    sin >> sensor_type;
-
-    if (sensor_type == 'O') {
-      // only read first 3 values, skip the timestamp
-      for (int i = 0; i < 3; i++) {
-        sin >> val;
-        odom_reading.push_back(val);
-        //printf("double value is = %f", val);
-      }
-      break;
+                else if (data_type == 'L') {
+                    char* pch;
+                    //We don't need the first character
+                    pch = strtok(line," "); 
+                    std::vector<std::string> lidar_val_string;
+                    lidar* lidar_val = new lidar;
+                    while(pch!=NULL) {
+                        pch = strtok(NULL, " ");
+                        lidar_val_string.push_back(pch);
+                    }
+                    lidar_val->t = std::stod(lidar_val_string.back());
+                    for(int i = 6; i < lidar_val_string.size()-1; i++) {
+                        lidar_val->ranges.push_back
+                                         (std::stoi(lidar_val_string[i]));
+                    }
+                    lidarScans_.push_back(lidar_val);
+                }
+            }
+        }
+        fin_.close();
     }
-  }
 
-  return odom_reading;
-  // how do you return empty? TODO
-}
-
-Mat Log::getNextLidar() {
-
-  Mat lidar_reading;
-
-  // loop until we get lidar entry
-  while (getline(fin, line)) {
-    istringstream sin(line);
-    sin >> sensor_type;
-
-    if (sensor_type == 'L') {
-      // only read first 185 values, skip the timestamp
-      for (int i = 0; i < 186; i++) {
-        sin >> val;
-        lidar_reading.push_back(val);
-        // print timestamp
-        //if (i == 186)
-        //printf("val = %f at count =%d\n", val, i);
-      }
-      break;
+    void Log::getLidar (int iter, lidar* lidar_val) const {
+        
+        if(iter >= lidarScans_.size()) {
+            printf("[ERROR] Wrong access to lidar scans");
+            return;
+        }
+        lidar_val = lidarScans_[iter];
     }
-  }
 
-  return lidar_reading;
+    void Log::getOdom (int iter, std::vector<odom*>& odoms) const {
+        odoms.clear();
+        for(int i = iter; i < iter + 2; i++) {
+            if(i >= lidarScans_.size()) {
+                printf("[ERROR] Wrong access to lidar scans");
+                return;
+            }
+            double time_stamp = lidarScans_[i]->t;
+            auto it = odomVals_.lower_bound(time_stamp);
+            if(it == odomVals_.end()) {
+                printf("[ERROR] Cannot find odom.");
+                return;
+            }
+            odoms.push_back(it->second);
+        }
+    }
+
 }

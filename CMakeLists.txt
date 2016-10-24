@@ -23,8 +23,9 @@ include_directories(${EIGEN_INCLUDE_DIRS})
 include_directories(include)
 
 add_library(particleFilter
-	    	src/test.cpp
-        src/map.cpp
+	    src/test.cpp
+            src/log.cpp
+            src/map.cpp
             src/sensor_model.cpp
             src/robot_state.cpp
             src/particle_state.cpp
