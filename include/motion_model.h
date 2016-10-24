@@ -18,8 +18,6 @@ namespace mm{
 
 	private:
 
-		int first_call_;
-		double t_init_;
 	};
 };
 

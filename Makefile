@@ -124,6 +124,30 @@ runTest/fast:
 	$(MAKE) -f CMakeFiles/runTest.dir/build.make CMakeFiles/runTest.dir/build
 .PHONY : runTest/fast
 
+src/log.o: src/log.cpp.o
+.PHONY : src/log.o
+
+# target to build an object file
+src/log.cpp.o:
+	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/log.cpp.o
+.PHONY : src/log.cpp.o
+
+src/log.i: src/log.cpp.i
+.PHONY : src/log.i
+
+# target to preprocess a source file
+src/log.cpp.i:
+	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/log.cpp.i
+.PHONY : src/log.cpp.i
+
+src/log.s: src/log.cpp.s
+.PHONY : src/log.s
+
+# target to generate assembly for a file
+src/log.cpp.s:
+	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/log.cpp.s
+.PHONY : src/log.cpp.s
+
 src/map.o: src/map.cpp.o
 .PHONY : src/map.o
 
@@ -326,6 +350,9 @@ help:
 	@echo "... particleFilter"
 	@echo "... rebuild_cache"
 	@echo "... runTest"
+	@echo "... src/log.o"
+	@echo "... src/log.i"
+	@echo "... src/log.s"
 	@echo "... src/map.o"
 	@echo "... src/map.i"
 	@echo "... src/map.s"

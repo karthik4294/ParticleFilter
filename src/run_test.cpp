@@ -7,9 +7,17 @@
 
 int main(int argc , char *argv[]){
 
-  Map *map = new Map("../../data/map/wean.dat");	
-  data::Log* log = new data::Log("../../data/robotdata1.log");
+  Map *map = new Map("../data/map/wean.dat");	
+  data::Log* log = new data::Log("../data/robotdata1.log");
   //map->displayMap();
+
+  data::lidar *lid;
+
+  for(int iter = 1; iter < 10; iter++){
+  	log->getLidar(iter, lid);
+  	std::vector<int> w = lid->ranges;
+  	std::cout << w.size() << std::endl;
+  }
 
   //ps::ParticleState particle_state(2.0, 3.0, 0.0, 5.0);
 
