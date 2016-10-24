@@ -172,6 +172,30 @@ src/map.cpp.s:
 	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/map.cpp.s
 .PHONY : src/map.cpp.s
 
+src/motion_model.o: src/motion_model.cpp.o
+.PHONY : src/motion_model.o
+
+# target to build an object file
+src/motion_model.cpp.o:
+	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/motion_model.cpp.o
+.PHONY : src/motion_model.cpp.o
+
+src/motion_model.i: src/motion_model.cpp.i
+.PHONY : src/motion_model.i
+
+# target to preprocess a source file
+src/motion_model.cpp.i:
+	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/motion_model.cpp.i
+.PHONY : src/motion_model.cpp.i
+
+src/motion_model.s: src/motion_model.cpp.s
+.PHONY : src/motion_model.s
+
+# target to generate assembly for a file
+src/motion_model.cpp.s:
+	$(MAKE) -f CMakeFiles/particleFilter.dir/build.make CMakeFiles/particleFilter.dir/src/motion_model.cpp.s
+.PHONY : src/motion_model.cpp.s
+
 src/particle_state.o: src/particle_state.cpp.o
 .PHONY : src/particle_state.o
 
@@ -356,6 +380,9 @@ help:
 	@echo "... src/map.o"
 	@echo "... src/map.i"
 	@echo "... src/map.s"
+	@echo "... src/motion_model.o"
+	@echo "... src/motion_model.i"
+	@echo "... src/motion_model.s"
 	@echo "... src/particle_state.o"
 	@echo "... src/particle_state.i"
 	@echo "... src/particle_state.s"

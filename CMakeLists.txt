@@ -27,6 +27,7 @@ add_library(particleFilter
             src/log.cpp
             src/map.cpp
             src/sensor_model.cpp
+            src/motion_model.cpp
             src/robot_state.cpp
             src/particle_state.cpp
             src/util_functions.cpp

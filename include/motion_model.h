@@ -14,10 +14,11 @@ namespace mm{
 	public:
 
 		MotionModel();
-		void applyModel(std::vector<ps::ParticleState> particles, double timestamp);
-
+		std::vector<ps::ParticleState> applyMotionModel(std::vector<ps::ParticleState> particles, int iter_num);
+		Eigen::Vector2f sampleNormalDist(Eigen::Vector2f p, double theta);
 	private:
 
+		utils::UtilFunctions *utils_ = new utils::UtilFunctions();
 	};
 };
 

@@ -4,20 +4,13 @@
 #include <robot_state.h>
 #include <particle_state.h>
 #include <sampler.h>
+#include <motion_model.h>
 
 int main(int argc , char *argv[]){
 
   Map *map = new Map("../data/map/wean.dat");	
   data::Log* log = new data::Log("../data/robotdata1.log");
   //map->displayMap();
-
-  data::lidar *lid;
-
-  for(int iter = 1; iter < 10; iter++){
-  	log->getLidar(iter, lid);
-  	std::vector<int> w = lid->ranges;
-  	std::cout << w.size() << std::endl;
-  }
 
   //ps::ParticleState particle_state(2.0, 3.0, 0.0, 5.0);
 
@@ -33,14 +26,22 @@ int main(int argc , char *argv[]){
   // particle_list->push_back(new_particle);
   // map->visualizeParticles(particle_list);
 
-  int num_particles = 1000;
+  int num_particles = 1;
 
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
+
+  mm::MotionModel *mm = new mm::MotionModel();
 
   std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  
 
   map->visualizeParticles(&particles);
+
+  std::vector<ps::ParticleState> new_particles;
+
+  new_particles = mm->applyMotionModel(particles, 0);
+
+  map->visualizeParticles(&new_particles);
 
   return 0;
 }

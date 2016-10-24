@@ -24,20 +24,24 @@ void Sampler::constructFullFreeSpace(){
 
 void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
 
-	std::default_random_engine gen;
-  	std::uniform_int_distribution<int> dist(0, full_free_space_.size());
+	std::random_device rd;
+  std::mt19937 gen(rd());
 
-  	 for (int i = 0; i < num_particles_; i++){
-    	
-    	int num = dist(gen);
-    	ParticleState p_state;
-    	p_state.x(std::get<0>(full_free_space_[num]));
-    	p_state.y(std::get<1>(full_free_space_[num]));
-    	p_state.theta(std::get<2>(full_free_space_[num]));
-    	p_state.weight(1.0);
+	std::uniform_int_distribution<int> dist(0, full_free_space_.size());
 
-    	ps.push_back(p_state);
-  	}
+	for (int i = 0; i < num_particles_; i++){	
+  	int num = dist(gen);
+  	ParticleState p_state;
+  	p_state.x(std::get<0>(full_free_space_[num]));
+  	p_state.y(std::get<1>(full_free_space_[num]));
+  	p_state.theta(std::get<2>(full_free_space_[num]));
+
+    std::cout << "Sampled point " << p_state.x() << " " << p_state.y() << " " << p_state.theta() << std::endl; 
+
+  	p_state.weight(1.0);
+
+  	ps.push_back(p_state);
+	}
 }
 
 

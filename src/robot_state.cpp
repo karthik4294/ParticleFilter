@@ -39,8 +39,8 @@ RobotState RobotState::rotate(double theta){
 
 	RobotState trans_state;
 	
-	Eigen::Vector3d vec(x_, y_, 0);	
-	Eigen::Vector3d trans_vec = utils_->rotateVector(vec, theta);
+	Eigen::Vector2f vec(x_, y_);	
+	Eigen::Vector2f trans_vec = utils_->rotateVector(vec, theta);
 
 	trans_state.x(trans_vec[0]);
 	trans_state.y(trans_vec[1]);
