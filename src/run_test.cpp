@@ -7,9 +7,17 @@
 #include <motion_model.h>
 
 int main(int argc , char *argv[]){
-
+  data::Log* log = new data::Log("../data/log/robotdata1.log");
   Map *map = new Map("../data/map/wean.dat");	
-  data::Log* log = new data::Log("../data/robotdata1.log");
+  
+  //Testing if the file loaded ok
+  for (int i = 0; i < log->laserCount(); i++) {
+    data::lidar* lidar_val;
+    log->getLidar(i, lidar_val);
+    std::vector<int> ranges = lidar_val->ranges;
+    printf("%zu\n", ranges.size());
+  } 
+  
   //map->displayMap();
 
   //ps::ParticleState particle_state(2.0, 3.0, 0.0, 5.0);

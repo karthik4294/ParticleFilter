@@ -21,11 +21,13 @@ namespace data {
         Log(std::string filename);
         void getLidar(int iter, lidar*& lidar_val) const;
         void getOdom(int iter, std::vector<odom*>& odoms) const;
+        int laserCount() {return laserCount_;}
+        int odomCount() {return odomCount_;}
     private:
         std::vector<lidar*> lidarScans_;
         std::map<double, odom*> odomVals_;
-    	std::ifstream fin_;
-
+    	int laserCount_;
+        int odomCount_;
     };
 }
 #endif
