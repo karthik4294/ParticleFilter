@@ -18,5 +18,6 @@
 #include <ctime>
 #include <unordered_map>
 #include <random>
+#include <cmath>
 
 #endif

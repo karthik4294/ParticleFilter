@@ -72,6 +72,10 @@ namespace ps{
     return weight_;
   }
 
+  const std::vector<double>* ParticleState::ranges() {
+    return ranges_;
+  }
+
   ParticleState ParticleState::rotate(double theta){
 
     ParticleState trans_state;
