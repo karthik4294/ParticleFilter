@@ -61,7 +61,7 @@ int main(int argc , char *argv[]){
   //Visualize the sampled particles
   map->visualizeParticles(&particles);
   //Construct the motion model
-  mm::MotionModel *mm = new mm::MotionModel(log);
+  mm::MotionModel *mm = new mm::MotionModel(log, mm_std_xy, mm_std_theta);
   
   //Now run the particle filter
   for(int iter = 0; iter < time_stamps.size(); iter++) {
