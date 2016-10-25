@@ -31,7 +31,7 @@ class Map{
       return free_space_;
     }
 
-    void visualizeParticles(vector<ParticleState>* particle_list);
+    void visualizeParticles(vector<ParticleState>* particle_list, int color);
     void visualizePoints(vector<pair<int,int>>* points_list);
     void visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* points_list);
 

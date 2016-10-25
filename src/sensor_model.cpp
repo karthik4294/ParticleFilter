@@ -26,6 +26,9 @@ namespace sensor_model {
 
 	void LidarModel::updateWeight(ps::ParticleState* particle,
 	                              data::lidar* lidar) {
+		//Re-initialize weight to 1
+		particle->weight(1.0);
+
 		std::vector<int>* lidar_ranges = lidar->ranges;
 		std::vector<int>* ideal_ranges = particle->ranges();
 		

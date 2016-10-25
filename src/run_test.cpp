@@ -59,7 +59,7 @@ int main(int argc , char *argv[]){
   std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  
   //Visualize the sampled particles
-  map->visualizeParticles(&particles);
+  map->visualizeParticles(&particles, 1);
   //Construct the motion model
   mm::MotionModel *mm = new mm::MotionModel(log, mm_std_xy, mm_std_theta);
   
@@ -81,10 +81,10 @@ int main(int argc , char *argv[]){
         sensor->updateWeight(&particles[i], log->getLidar(time));
       }
       //Now resample the particles
-      //sp->importanceResample(particles);
+      sp->importanceResample(particles);
 
       //Visualize the resampled particles
-      map->visualizeParticles(&particles);
+      map->visualizeParticles(&particles, 0);
     }
 
     //Now check if we need to apply motion model
@@ -94,7 +94,7 @@ int main(int argc , char *argv[]){
     }
 
     //Visualize the new particles
-    map->visualizeParticles(&particles);
+    map->visualizeParticles(&particles, 1);
   }
 
 

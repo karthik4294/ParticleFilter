@@ -97,17 +97,22 @@ void Map::displayMap(){
   waitKey(0);                                          // Wait for a keystroke in the window
 }
 
-void Map::visualizeParticles(vector<ParticleState>* particle_list) {
+void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
 
   Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
   //cvtColor(temp_grid, grid_rgb, CV_GRAY2RGB);
 
   Point pt;
-  cv::Scalar red(0, 0, 255);
+  if (color == 1) {
+    cv::Scalar color(0, 0, 255);
+  }
+  else {
+    cv::Scalar color(0, 255, 0);
+  }
   for(std::vector<ParticleState>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
     //std::cout << int(it->x()/res) << int(it->y()/res) << std::endl;  
     pt = Point(int(it->y()/res), int(it->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
-    circle(grid_rgb, pt, 2, red);
+    circle(grid_rgb, pt, 2, color);
 
   }
 
@@ -187,7 +192,7 @@ vector<pair<int,int>> Map::interpolate(int x0, int y0, int x1, int y1) {
     //printf("at step = %d points are x=%d y=%d t=%f", step,  x, y, t);
     //printf("grid value is =%f\n", grid.at<double>(x,y));
 
-    if (grid.at<double>(x,y) == 0.0) {
+    if (grid.at<double>(x,y) < 1.0) {
       //// collided with obstacle
       //printf("collided");
       break;
