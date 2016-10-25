@@ -78,6 +78,7 @@ int main(int argc , char *argv[]){
     if(log->isLidar(time)) {
       //Do sensor update and importance resampling
       //Candidate for parallelization
+      //#pragma omp parallel for  
       for (int i = 0; i < num_particles; i++) {
         map->getIdealLidar(particles[i]);
         sensor->updateWeight(&particles[i], log->getLidar(time));
@@ -86,7 +87,8 @@ int main(int argc , char *argv[]){
       sp->importanceResample(particles);
       printf("resampled for iter %d, %zu \n", iter, particles.size());
       //Visualize the resampled particles
-      map->visualizeParticles(&particles, 0);
+      map->visualizeParticles(&particles, 1);
+
       //getchar();
     }
 
@@ -94,10 +96,12 @@ int main(int argc , char *argv[]){
     if(log->isOdom(time)) {
       //Apply motion model based on the current time and next time
       mm->applyMotionModel(particles, time, next_time);
+      cout<<"applied motion model"<<endl;
+      map->visualizeParticles(&particles, 0);
     }
 
     //Visualize the new particles
-    map->visualizeParticles(&particles, 1);
+   
   }
 
 

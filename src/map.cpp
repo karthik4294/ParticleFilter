@@ -122,7 +122,7 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
 
   // sleep(0.1);
 
-  waitKey(0);                                          // Wait for a keystroke in the window
+  waitKey(1);                                          // Wait for a keystroke in the window
   // destroyWindow( "Display window");
 }
 
@@ -145,27 +145,41 @@ void Map::visualizePoints(vector<pair<int,int>>* points_list) {
   destroyWindow( "Display window");
 }
 
-void Map::visualizeRayTrace(ParticleState *particle, vector<pair<int,int>>* points_list) {
+void Map::visualizeRayTrace(Mat& grid_rgb, ParticleState *particle, vector<pair<int,int>>* points_list, int r, int g, int b) {
 
-  Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
+  //Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
 
   Point pt;
   cv::Scalar red(0, 0, 255);
+  //int r;
+  //int g;
+  //int b;
+  //int count = 0;
+  //r = 255;
+  int size = points_list->size();
   pt = Point(int(particle->y()/res), int(particle->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
   circle(grid_rgb, pt, 5, red);
-
-  cv::Scalar color(255, 0, 0);
+  //arrowedLine(grid_rgb, )
+  cv::Scalar color(0, 0, 0);
 
   for(std::vector<pair<int,int>>::iterator it = points_list->begin(); it != points_list->end(); ++it) {
     pt = Point(it->second, it->first);
+    /*if (r > 0 ) {
+      r = r - (int)(2*count/size);
+      b = b + (int)(2*count/size);
+    }
+    else {
+      r = 0;
+      b = b - (int)(2*count/size);
+      g = g + (int)(2*count/size);
+    }*/
+    color = cv::Scalar(b,g,r);
     circle(grid_rgb, pt, 0.5, color);
+    //count ++;
+    //waitKey(0);
   }
 
-  namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-  imshow( "Display window", grid_rgb);                   // Show our image inside it.
-
-  waitKey(0);                                          // Wait for a keystroke in the window
-  destroyWindow( "Display window");
+  
 }
 
 
@@ -216,7 +230,7 @@ void Map::visualizeIdealLidar(ParticleState p) {
 
   vector<pair<int,int>> single_ray;
   vector<pair<int,int>> all_rays;
-
+  //line(grid_rx0,)
   for (theta = 90; theta >= -90; theta--) {
     //{
     //theta = 0;
@@ -236,13 +250,15 @@ void Map::visualizeIdealLidar(ParticleState p) {
 
     single_ray = interpolate(x0, y0, tx, ty);
     all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());
+
+    //visualizeRayTrace(&p, &single_ray, 255, 0, 255);
   }
 
-  visualizeRayTrace(&p, &all_rays);
+  
   }
 
 void Map::getIdealLidar(ParticleState& p) {
-
+    //Mat grid_rgb = grid_disp_.clone();
     float theta;
     //std::cout<<p.ranges()->size()<<std::endl;
     p.ranges()->clear();
@@ -250,13 +266,20 @@ void Map::getIdealLidar(ParticleState& p) {
     double theta0 = p.theta();
     int x1, y1, tx, ty;
     //printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
-
+    Eigen::Vector2d point(50, 0);
+    Eigen::Rotation2Dd t(theta0);
+    t.toRotationMatrix();
+    Eigen::Vector2d new_point1 = t * point;
+    //arrowLine(grid_rgb, Point(y0, x0), Point(y0 + new_point1(1), x0 + new_point1(0)), Scalar(0,0,0));
     vector<pair<int,int>> single_ray;
-
+    //vector<pair<int,int>> all_rays;
     int dx, dy;
     int current_dist;
-    double init_theta = 0;
-    double theta_increment = (180.0/179.0);
+    double init_theta = 90;
+    double theta_increment = -(180.0/179.0);
+    int r = 255;
+    int g = 0;
+    int b = 0;
     for (int i = 0; i < 180; i++) 
     {
       theta = init_theta + i*theta_increment;
@@ -265,10 +288,8 @@ void Map::getIdealLidar(ParticleState& p) {
       y1 = rangemax * sin(theta * PI/180);
 
 
+      
       Eigen::Vector2d point(x1, y1);
-      Eigen::Rotation2Dd t(theta0);
-      t.toRotationMatrix();
-
       Eigen::Vector2d new_point = t * point;
 
       tx = new_point(0) + x0;
@@ -278,7 +299,20 @@ void Map::getIdealLidar(ParticleState& p) {
       //printf("x1=%d, y1=%d\n", x1, y1);
 
       single_ray = interpolate(x0, y0, tx, ty);
-
+      /*if (r > 0 ) {
+        double percentage = (1-2*i/180.0);
+        r = (int)((1.0-(2.0*i/180.0))*255.0);
+        g = 255 - r;
+        }
+      else {
+        r = 0;
+        b = (int)(((2.0*i/180.0)-1)*255.0);
+        g = 255 - b;
+        
+        }
+        
+      visualizeRayTrace(grid_rgb, &p, &single_ray, b, g, r);
+      all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());*/
       // calculate lidar distance after collision or max
       if(single_ray.empty()) {
         current_dist = 0;
@@ -291,6 +325,8 @@ void Map::getIdealLidar(ParticleState& p) {
       p.ranges()->push_back(current_dist);
       
     }
-
-    
+  /*namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+  imshow( "Display window", grid_rgb);                   // Show our image inside it.
+  waitKey(0);                                          // Wait for a keystroke in the window
+  destroyWindow( "Display window");*/
 }

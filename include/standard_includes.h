@@ -20,5 +20,6 @@
 #include <map>
 #include <random>
 #include <cmath>
+#include <omp.h>
 
 #endif

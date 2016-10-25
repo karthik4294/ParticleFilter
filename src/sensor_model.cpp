@@ -41,9 +41,9 @@ namespace sensor_model {
 				  lidar_ranges->size());
 			return;
 		}
-		printf("************* \n");
+		/*printf("************* \n");
 		printf("New Particle \n");
-		printf("************* \n");
+		printf("************* \n");*/
 		for(int i = 0; i < lidar_ranges->size(); i++) {
 
 			//Get the ray-casted range
@@ -51,7 +51,7 @@ namespace sensor_model {
 
 			//Get the measured range
 			int lidar_range = lidar_ranges->at(i);
-			printf("\t Lidar range: %d, Ideal range: %d \n", ideal_range, lidar_range);
+			//printf("\t Lidar range: %d, Ideal range: %d \n", ideal_range, lidar_range);
 			//Calcualate p_hit
 			double p_hit = getPHit(ideal_range, lidar_range);
 
@@ -72,8 +72,8 @@ namespace sensor_model {
 			particle->weight(particle->weight()*p);
 		}
 		if(particle->weight() > 0.001) {
-			printf("weight for particle %f \n", particle->weight());
-			getchar();
+			//printf("weight for particle %f \n", particle->weight());
+			//getchar();
 		}
 		
 	}

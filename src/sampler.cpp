@@ -50,7 +50,7 @@ void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
 void Sampler::importanceResample(std::vector<ps::ParticleState> &ps)
   {
 
-    std::vector <int> input_weights;
+    std::vector <double> input_weights;
 
     for(std::vector<ps::ParticleState>::iterator it = ps.begin(); it != ps.end(); ++it) {
       input_weights.push_back(it->weight());
@@ -67,6 +67,7 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps)
     for(int n=0; n<ps.size(); ++n) {
       //cout << d(gen) << endl;
       resampled_particles.push_back(ps[d(gen)]);
+      
     }
     ps = resampled_particles;
   }
