@@ -5,11 +5,15 @@
 #include <particle_state.h>
 #include <sampler.h>
 #include <motion_model.h>
+#include <sensor_model.h>
 
 int main(int argc , char *argv[]){
   data::Log* log = new data::Log("../data/log/robotdata1.log");
   Map *map = new Map("../data/map/wean.dat");	
-  
+  //Construct the sensor model
+  sensor_model::LidarModel* sensor = new sensor_model::LidarModel(
+                                         log->getMaxRange(), 0.1, 5.0, 2.0, 2.0,
+                                         1.5, 0.5);
   //Testing if the file loaded ok
   for (int i = 0; i < log->laserCount(); i++) {
     data::lidar* lidar_val;
@@ -37,7 +41,7 @@ int main(int argc , char *argv[]){
   int num_particles = 1;
 
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
-
+  
   mm::MotionModel *mm = new mm::MotionModel();
 
   std::vector<ps::ParticleState> particles;

@@ -6,6 +6,7 @@ namespace data {
     	std::ifstream fin_(filename);
     	laserCount_ = 0;
     	odomCount_ = 0;
+        max_range_ = 0;
         if(fin_.good()) {
         	std::string line_raw;
             while (getline(fin_, line_raw)) {
@@ -37,8 +38,12 @@ namespace data {
                     }
                     lidar_val->t = std::stod(lidar_val_string.back());
                     for(int i = 6; i < lidar_val_string.size()-1; i++) {
+                        int range = std::stoi(lidar_val_string[i]);
+                        if(range > max_range_) {
+                            max_range_ = range;
+                        }
                         lidar_val->ranges.push_back
-                                         (std::stoi(lidar_val_string[i]));
+                                         (range);
                     }
                     lidarScans_.push_back(lidar_val);
                     laserCount_ ++;

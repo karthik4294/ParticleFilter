@@ -23,11 +23,13 @@ namespace data {
         void getOdom(int iter, std::vector<odom*>& odoms) const;
         int laserCount() {return laserCount_;}
         int odomCount() {return odomCount_;}
+        int getMaxRange() {return max_range_;}
     private:
         std::vector<lidar*> lidarScans_;
         std::map<double, odom*> odomVals_;
     	int laserCount_;
         int odomCount_;
+        int max_range_;
     };
 }
 #endif
