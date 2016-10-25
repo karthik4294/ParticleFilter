@@ -5,9 +5,10 @@ using namespace data;
 
 namespace mm{
 
-MotionModel::MotionModel(data::Log *log)
+MotionModel::MotionModel(data::Log *log, double mm_std_xy, double mm_std_theta)
 :
-std_dev_(0.05)
+std_xy_(mm_std_xy),
+std_theta_(mm_std_theta)
 {
 	utils_ = new UtilFunctions();
 	log_ = log;
@@ -56,9 +57,9 @@ Eigen::Vector3f MotionModel::sampleNormalDist(Eigen::Vector2f p, double theta){
 	std::random_device rd;
     std::mt19937 gen(rd());
  
-    std::normal_distribution<> d1(p(0), std_dev_);
-    std::normal_distribution<> d2(p(1), std_dev_);
-    std::normal_distribution<> d3(theta, std_dev_);
+    std::normal_distribution<> d1(p(0), std_xy_);
+    std::normal_distribution<> d2(p(1), std_xy_);
+    std::normal_distribution<> d3(theta, std_theta_);
 
     Eigen::Vector3f norm_p(d1(gen), d2(gen), d3(gen));
 

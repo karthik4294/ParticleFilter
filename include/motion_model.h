@@ -14,7 +14,7 @@ namespace mm{
 
 	public:
 
-		MotionModel(data::Log *log);
+		MotionModel(data::Log *log, double mm_std_xy, double mm_std_theta);
 		void applyMotionModel(std::vector<ps::ParticleState>& particles,
 		                                                double time,
 		                                                double next_time);
@@ -24,7 +24,8 @@ namespace mm{
 
 		utils::UtilFunctions *utils_;
 		data::Log *log_;
-		double std_dev_;
+		double std_xy_;
+		double std_theta_;
 	};
 };
 
