@@ -8,46 +8,64 @@
 #include <sensor_model.h>
 
 int main(int argc , char *argv[]){
+  //Read Data
   data::Log* log = new data::Log("../data/log/robotdata1.log");
+  std::vector<double> time_stamps = log->getTimeStamps();
+
+  //Construct the map
   Map *map = new Map("../data/map/wean.dat");	
   //Construct the sensor model
   sensor_model::LidarModel* sensor = new sensor_model::LidarModel(
                                          log->getMaxRange(), 0.1, 5.0, 2.0, 2.0,
                                          1.5, 0.5);
-  //Testing if the file loaded ok
-  for (int i = 0; i < log->laserCount(); i++) {
-    data::lidar* lidar_val;
-    log->getLidar(i, lidar_val);
-    std::vector<int> ranges = lidar_val->ranges;
-    // printf("%zu\n", ranges.size());
-  } 
-  
-  //map->displayMap();
-
-  //ps::ParticleState particle_state(2.0, 3.0, 0.0, 5.0);
-
-  // ps::ParticleState news = particle_state.rotate(M_PI);
-
-  // vector<ParticleState> *particle_list = new vector<ParticleState>;
-
-  // particle_list->push_back(particle_state);
-  // map->visualizeParticles(particle_list);
-
-  // particle_list->clear();
-  // ps::ParticleState new_particle(200.0, 300.0, 0.0, 5.0);
-  // particle_list->push_back(new_particle);
-  // map->visualizeParticles(particle_list);
-
+  //Construct the sampler and sample initial points
   int num_particles = 1;
-
-  mm::MotionModel *mm = new mm::MotionModel(log);
-
+  sp::Sampler* sp = new sp::Sampler(map, num_particles);
   std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  
-
+  //Visualize the sampled particles
   map->visualizeParticles(&particles);
+  //Construct the motion model
+  mm::MotionModel *mm = new mm::MotionModel(log);
+  
+  //Now run the particle filter
+  for(int iter = 0; iter < time_stamps.size(); iter++) {
+    double time = time_stamps[iter];
+    double next_time = time;
+    //If the next time exists, set it to that
+    if(iter < time_stamps.size() -1) {
+      next_time = time_stamps[iter + 1];
+    }
 
-  std::vector<ps::ParticleState> new_particles;
+    //Now check if we need to do a sensor update
+    if(log->isLidar(time)) {
+      //Do sensor update and importance resampling
+      //Candidate for parallelization
+      for (int i = 0; i < num_particles; i++) {
+        map->getIdealLidar(particles[i]);
+        sensor->updateWeight(&particles[i], log->getLidar(time));
+      }
+      //Now resample the particles
+      //sp->importanceResample(particles);
+
+      //Visualize the resampled particles
+      map->visualizeParticles(&particles);
+    }
+
+    //Now check if we need to apply motion model
+    if(log->isOdom(time)) {
+      //Apply motion model based on the current time and next time
+      mm->applyMotionModel(particles, time, next_time);
+    }
+
+    //Visualize the new particles
+    map->visualizeParticles(&particles);
+  }
+
+
+
+
+/*  std::vector<ps::ParticleState> new_particles;
 
   std::vector<ps::ParticleState> set;
 
@@ -57,7 +75,7 @@ int main(int argc , char *argv[]){
 	set.insert(set.end(), new_particles.begin(), new_particles.end());
   }
 
-  map->visualizeParticles(&set);
+  map->visualizeParticles(&set);*/
 
 
   return 0;

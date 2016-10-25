@@ -13,18 +13,19 @@ std_dev_(0.05)
 	log_ = log;
 }
 
-std::vector<ps::ParticleState> MotionModel::applyMotionModel(std::vector<ps::ParticleState> 
-											particles, int iter_num){
+void MotionModel::applyMotionModel(std::vector<ps::ParticleState>& particles,
+                                   double time, double next_time){
 
-	std::vector<odom*> odom_values;
-	log_->getOdom(iter_num, odom_values);
+	odom* odom_val_current = log_->getOdom(time);
+	odom* odom_val_next = log_->getOdom(next_time);
+	
+	double x0 = odom_val_current->x;
+	double y0 = odom_val_current->y;
+	double th0 = odom_val_current->theta;
 
-	double x0 = odom_values[0]->x;
-	double y0 = odom_values[0]->y;
-	double th0 = odom_values[0]->theta;
-	double x1 = odom_values[1]->x;
-	double y1 = odom_values[1]->y;
-	double th1 = odom_values[1]->theta;
+	double x1 = odom_val_next->x;
+	double y1 = odom_val_next->y;
+	double th1 = odom_val_next->theta;
 
 	// Change
 	double x_diff = x1 - x0;
@@ -48,7 +49,6 @@ std::vector<ps::ParticleState> MotionModel::applyMotionModel(std::vector<ps::Par
 		particles[i].theta(particles[i].theta() + s_p_diff(2));
 
 	}
-	return particles;
 }
 
 Eigen::Vector3f MotionModel::sampleNormalDist(Eigen::Vector2f p, double theta){

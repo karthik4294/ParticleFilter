@@ -12,21 +12,25 @@ namespace data {
 
     struct lidar {
         double t; //time
-        std::vector<int> ranges;
+        std::vector<int>* ranges; //ranges
     };
 
     class Log{
 
     public:
         Log(std::string filename);
-        void getLidar(int iter, lidar*& lidar_val) const;
-        void getOdom(int iter, std::vector<odom*>& odoms) const;
+        lidar* getLidar(double time);
+        odom* getOdom(double time);
         int laserCount() {return laserCount_;}
         int odomCount() {return odomCount_;}
         int getMaxRange() {return max_range_;}
+        std::vector<double> getTimeStamps() {return time_stamps_;}
+        bool isLidar(double time) {return (lidarScans_.count(time) > 0);}
+        bool isOdom(double time) {return (odomVals_.count(time) > 0);}
     private:
-        std::vector<lidar*> lidarScans_;
+        std::map<double, lidar*> lidarScans_;
         std::map<double, odom*> odomVals_;
+        std::vector<double> time_stamps_;
     	int laserCount_;
         int odomCount_;
         int max_range_;

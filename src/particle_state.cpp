@@ -13,6 +13,9 @@ namespace ps{
       weight_(weight)
   {
     utils_ = new utils::UtilFunctions();
+    ranges_ = new std::vector<int> ();
+    printf("hi %zu", ranges_->size());
+    ranges_->clear();
   }
 
   ParticleState::ParticleState(double x, double y, double theta, double weight)
@@ -27,6 +30,9 @@ namespace ps{
     robot_state_.x(x_);
     robot_state_.y(y_);
     robot_state_.theta(theta_);
+    ranges_ = new std::vector<int> ();
+    printf("hi %zu", ranges_->size());
+    ranges_->clear();
   }
 
   void ParticleState::x(double x){
@@ -70,10 +76,6 @@ namespace ps{
 
   double ParticleState::weight(){
     return weight_;
-  }
-
-  const std::vector<double>* ParticleState::ranges() {
-    return ranges_;
   }
 
   ParticleState ParticleState::rotate(double theta){

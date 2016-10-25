@@ -25,8 +25,9 @@ namespace sensor_model {
 	}
 
 	void LidarModel::updateWeight(ps::ParticleState* particle,
-	const std::vector<double>* lidar_ranges) {
-		const std::vector<double>* ideal_ranges = particle->ranges();
+	                              data::lidar* lidar) {
+		std::vector<int>* lidar_ranges = lidar->ranges;
+		std::vector<int>* ideal_ranges = particle->ranges();
 		
 		//Sanity check
 		if(ideal_ranges->size() != lidar_ranges->size()) {
@@ -38,10 +39,10 @@ namespace sensor_model {
 
 		for(int i = 0; i < lidar_ranges->size(); i++) {
 			//Get the ray-casted range
-			double ideal_range = ideal_ranges->at(i);
+			int ideal_range = ideal_ranges->at(i);
 
 			//Get the measured range
-			double lidar_range = lidar_ranges->at(i);
+			int lidar_range = lidar_ranges->at(i);
 
 			//Calcualate p_hit
 			double p_hit = getPHit(ideal_range, lidar_range);
@@ -65,7 +66,7 @@ namespace sensor_model {
 	}
 
 	//Function to get the p_hit according to gaussian
-	double LidarModel::getPHit(double ideal_range, double lidar_range) {
+	double LidarModel::getPHit(int ideal_range, int lidar_range) {
 		//Transform lidar_range to a normal distribution variable
 		//z = x - mu / sigma
 		//Integrate over the density function to get the probability
@@ -82,7 +83,7 @@ namespace sensor_model {
 	}
 
 	//Function to get p_short
-	double LidarModel::getPShort(double ideal_range, double lidar_range) {
+	double LidarModel::getPShort(int ideal_range, int lidar_range) {
 		
 		//Check if eligible
 		if(lidar_range < 0 || lidar_range > ideal_range) {
@@ -108,7 +109,7 @@ namespace sensor_model {
 	}
 
 	//Function to get p_max
-	double LidarModel::getPMax(double lidar_range) {
+	double LidarModel::getPMax(int lidar_range) {
 		
 		if(lidar_range == max_range_) {
 			return 1.0;
@@ -119,7 +120,7 @@ namespace sensor_model {
 	}
 
 	//Function to get p_rand
-	double LidarModel::getPRand(double lidar_range) {
+	double LidarModel::getPRand(int lidar_range) {
 		
 		if(lidar_range < 0 || lidar_range > max_range_) {
 			return 0.0;

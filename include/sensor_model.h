@@ -4,6 +4,7 @@
 
 #include <standard_includes.h>
 #include <map.h>
+#include <log.h>
 
 namespace sensor_model {
 	class LidarModel {
@@ -16,7 +17,7 @@ namespace sensor_model {
 			       double z_rand);
 		
 		void updateWeight(ps::ParticleState* particle,
-						  const std::vector<double>* lidar_ranges);
+						  data::lidar* lidar);
 
 		private:
 
@@ -45,16 +46,16 @@ namespace sensor_model {
 		//Private functions
 
 		//get p_hit
-		double getPHit(double ideal_range, double lidar_range);
+		double getPHit(int ideal_range, int lidar_range);
 
 		//get p_short
-		double getPShort(double ideal_range, double lidar_range);
+		double getPShort(int ideal_range, int lidar_range);
 
 		//get p_max
-		double getPMax(double lidar_range);
+		double getPMax(int lidar_range);
 
 		//get p_rand
-		double getPRand(double lidar_range);
+		double getPRand(int lidar_range);
 
 	};
 }

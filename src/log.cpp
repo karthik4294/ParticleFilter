@@ -7,6 +7,8 @@ namespace data {
     	laserCount_ = 0;
     	odomCount_ = 0;
         max_range_ = 0;
+        time_stamps_.clear();
+
         if(fin_.good()) {
         	std::string line_raw;
             while (getline(fin_, line_raw)) {
@@ -25,6 +27,8 @@ namespace data {
                     odom_val->y = std::stod(odom_val_string[1]);
                     odom_val->theta = std::stod(odom_val_string[2]);
                     odom_val->t = std::stod(odom_val_string[3]);
+                    //Add the time to known time stamps
+                    time_stamps_.push_back(odom_val->t);
                     //Add it to the map
                     odomVals_[odom_val->t] = odom_val;
                     odomCount_ ++;
@@ -33,6 +37,9 @@ namespace data {
                 else if (data_type == 'L') {
                     std::vector<std::string> lidar_val_string;
                     lidar* lidar_val = new lidar;
+                    lidar_val->ranges = new std::vector<int>;
+                    lidar_val->ranges->clear();
+                    odom* odom_val = new odom;
                     while(iss>>token) {
                         lidar_val_string.push_back(token);
                     }
@@ -42,42 +49,46 @@ namespace data {
                         if(range > max_range_) {
                             max_range_ = range;
                         }
-                        lidar_val->ranges.push_back
+                        lidar_val->ranges->push_back
                                          (range);
                     }
-                    lidarScans_.push_back(lidar_val);
+                    //Add the odom corresponding to the laser in the map
+                    odom_val->x = std::stod(lidar_val_string[0]);
+                    odom_val->y = std::stod(lidar_val_string[1]);
+                    odom_val->theta = std::stod(lidar_val_string[2]);
+                    odom_val->t = lidar_val->t;
+                    odomVals_[odom_val->t] = odom_val;
+
+                    //Add the lidar reading to the hash table
+                    lidarScans_[lidar_val->t] = lidar_val;
+
+                    //Add the time step to the vector;
+                    time_stamps_.push_back(lidar_val->t);
+
                     laserCount_ ++;
                 }
             }
         }
-        printf("Read %d laser scans and %d odom vals \n", laserCount_, odomCount_);
+        printf("Read %d laser scans and %d odom vals for %zu time steps total \n",
+                laserCount_, odomCount_, time_stamps_.size());
         fin_.close();
     }
 
-    void Log::getLidar (int iter, lidar*& lidar_val) const {
+    lidar* Log::getLidar (double time) {
         
-        if(iter >= lidarScans_.size()) {
+        if(lidarScans_.count(time) <= 0) {
             printf("[ERROR] Wrong access to lidar scans");
-            return;
+            return NULL;
         }
-        lidar_val = lidarScans_[iter];
+        return lidarScans_[time];
     }
 
-    void Log::getOdom (int iter, std::vector<odom*>& odoms) const {
-        odoms.clear();
-        for(int i = iter; i < iter + 2; i++) {
-            if(i >= lidarScans_.size()) {
-                printf("%d [ERROR] Wrong access to lidar scans\n", i);
-                return;
-            }
-            double time_stamp = lidarScans_[i]->t;
-            auto it = odomVals_.lower_bound(time_stamp);
-            if(it == odomVals_.end()) {
-                printf("[ERROR] Cannot find odom.");
-                return;
-            }
-            odoms.push_back(it->second);
+    odom* Log::getOdom (double time) {
+         if(odomVals_.count(time) <= 0) {
+            printf("[ERROR] Wrong access to odom");
+            return NULL;
         }
+        return odomVals_[time];
     }
 
 }

@@ -235,10 +235,11 @@ void Map::visualizeIdealLidar(ParticleState p) {
   visualizeRayTrace(&p, &all_rays);
   }
 
-vector<int> Map::getIdealLidar(ParticleState p) {
+void Map::getIdealLidar(ParticleState& p) {
 
     float theta;
-
+    std::cout<<p.ranges()->size()<<std::endl;
+    p.ranges()->clear();
     int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
     double theta0 = p.theta();
     int x1, y1, tx, ty;
@@ -246,7 +247,6 @@ vector<int> Map::getIdealLidar(ParticleState p) {
 
     vector<pair<int,int>> single_ray;
 
-    vector<int> lidar_readings;
     int dx, dy;
     int current_dist;
 
@@ -276,9 +276,9 @@ vector<int> Map::getIdealLidar(ParticleState p) {
       dx = single_ray.back().first - x0;
       dy = single_ray.back().second - y0;
       current_dist = sqrt(dx*dx + dy*dy);
-      lidar_readings.push_back(current_dist);
+      p.ranges()->push_back(current_dist);
       
     }
 
-    return lidar_readings;
+    
 }

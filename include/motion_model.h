@@ -15,7 +15,10 @@ namespace mm{
 	public:
 
 		MotionModel(data::Log *log);
-		std::vector<ps::ParticleState> applyMotionModel(std::vector<ps::ParticleState> particles, int iter_num);
+		void applyMotionModel(std::vector<ps::ParticleState>& particles,
+		                                                double time,
+		                                                double next_time);
+		
 		Eigen::Vector3f sampleNormalDist(Eigen::Vector2f p, double theta);
 	private:
 
