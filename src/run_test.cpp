@@ -20,6 +20,7 @@ int main(int argc , char *argv[]){
     6. lambda_short
     7. z_max
     8. z_rand
+    9. num_particles;
   */
   std::vector<double> params;
   std::ifstream config_reader(filename);
@@ -41,7 +42,7 @@ int main(int argc , char *argv[]){
   double lambda_short = params[5];
   double z_max = params[6];
   double z_rand = params[7];
-
+  int num_particles = (int) params[8];
   //Read Data
   data::Log* log = new data::Log("../data/log/robotdata1.log");
   std::vector<double> time_stamps = log->getTimeStamps();
@@ -54,7 +55,6 @@ int main(int argc , char *argv[]){
                                          z_hit, z_short, lambda_short, z_max,
                                          z_rand);
   //Construct the sampler and sample initial points
-  int num_particles = 100;
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
   std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  

@@ -116,7 +116,7 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list) {
 
   // sleep(0.1);
 
-  waitKey(0);                                          // Wait for a keystroke in the window
+  waitKey(1);                                          // Wait for a keystroke in the window
   // destroyWindow( "Display window");
 }
 
