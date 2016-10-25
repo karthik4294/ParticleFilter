@@ -62,7 +62,9 @@ int main(int argc , char *argv[]){
   map->visualizeParticles(&particles, 1);
   //Construct the motion model
   mm::MotionModel *mm = new mm::MotionModel(log, mm_std_xy, mm_std_theta);
-  
+  //Delete Later
+  printf("Max Range is %d \n", log->getMaxRange());
+  //Delete later
   //Now run the particle filter
   for(int iter = 0; iter < time_stamps.size(); iter++) {
     double time = time_stamps[iter];
@@ -82,9 +84,10 @@ int main(int argc , char *argv[]){
       }
       //Now resample the particles
       sp->importanceResample(particles);
-
+      printf("resampled for iter %d, %zu \n", iter, particles.size());
       //Visualize the resampled particles
       map->visualizeParticles(&particles, 0);
+      //getchar();
     }
 
     //Now check if we need to apply motion model

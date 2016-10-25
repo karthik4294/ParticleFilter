@@ -103,16 +103,17 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
   //cvtColor(temp_grid, grid_rgb, CV_GRAY2RGB);
 
   Point pt;
+  cv::Scalar c_color;
   if (color == 1) {
-    cv::Scalar color(0, 0, 255);
+    c_color = cv::Scalar(0, 0, 255);
   }
   else {
-    cv::Scalar color(0, 255, 0);
+    c_color = cv::Scalar(255, 0, 0);
   }
   for(std::vector<ParticleState>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
     //std::cout << int(it->x()/res) << int(it->y()/res) << std::endl;  
     pt = Point(int(it->y()/res), int(it->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
-    circle(grid_rgb, pt, 2, color);
+    circle(grid_rgb, pt, 2, c_color);
 
   }
 
@@ -121,7 +122,7 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
 
   // sleep(0.1);
 
-  waitKey(1);                                          // Wait for a keystroke in the window
+  waitKey(0);                                          // Wait for a keystroke in the window
   // destroyWindow( "Display window");
 }
 
@@ -208,7 +209,7 @@ void Map::visualizeIdealLidar(ParticleState p) {
 
   float theta;
 
-  int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
+  int x0 = (int) (p.x() ) / res, y0 = (int) (p.y() + lidar_xoffset) / res;
   double theta0 = p.theta();
   int x1, y1, tx, ty;
   //printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
@@ -254,8 +255,8 @@ void Map::getIdealLidar(ParticleState& p) {
 
     int dx, dy;
     int current_dist;
-    double init_theta = 90;
-    double theta_increment = -(180.0/179.0);
+    double init_theta = 0;
+    double theta_increment = (180.0/179.0);
     for (int i = 0; i < 180; i++) 
     {
       theta = init_theta + i*theta_increment;

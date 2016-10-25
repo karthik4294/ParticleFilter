@@ -14,7 +14,9 @@ namespace sensor_model {
 		lambda_short_ = lambda_short;
 		z_max_ = z_max;
 		z_rand_ = z_rand;
-
+		//Delete Later
+		printf("standard dev for sensor is %f \n", std_dev_);
+		//Delete Later
 		//Normalize
 		
 		double sum = z_hit_ + z_short_ + z_max_ + z_rand_;
@@ -39,14 +41,17 @@ namespace sensor_model {
 				  lidar_ranges->size());
 			return;
 		}
-
+		printf("************* \n");
+		printf("New Particle \n");
+		printf("************* \n");
 		for(int i = 0; i < lidar_ranges->size(); i++) {
+
 			//Get the ray-casted range
 			int ideal_range = ideal_ranges->at(i);
 
 			//Get the measured range
 			int lidar_range = lidar_ranges->at(i);
-
+			printf("\t Lidar range: %d, Ideal range: %d \n", ideal_range, lidar_range);
 			//Calcualate p_hit
 			double p_hit = getPHit(ideal_range, lidar_range);
 
@@ -62,10 +67,15 @@ namespace sensor_model {
 			//Find the total weighted probability
 			double p = z_hit_*p_hit + z_short_*p_short + z_max_*p_max
 			           + z_rand_*p_rand;
-
+			//printf("Probability is %f \n", p);  
 			//Update the particle weight
 			particle->weight(particle->weight()*p);
 		}
+		if(particle->weight() > 0.001) {
+			printf("weight for particle %f \n", particle->weight());
+			getchar();
+		}
+		
 	}
 
 	//Function to get the p_hit according to gaussian
