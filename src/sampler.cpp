@@ -34,10 +34,9 @@ void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
   	ParticleState p_state;
   	p_state.x(std::get<0>(full_free_space_[num]));
   	p_state.y(std::get<1>(full_free_space_[num]));
-    p_state.theta(0.0);
-  	// p_state.theta(std::get<2>(full_free_space_[num]));
+  	p_state.theta(std::get<2>(full_free_space_[num]));
 
-    std::cout << "Sampled point " << p_state.x() << " " << p_state.y() << " " << p_state.theta() << std::endl; 
+    // std::cout << "Sampled point " << p_state.x() << " " << p_state.y() << " " << p_state.theta() << std::endl; 
 
   	p_state.weight(1.0);
 

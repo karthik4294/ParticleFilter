@@ -104,7 +104,6 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list) {
 
   Point pt;
   cv::Scalar red(0, 0, 255);
-  printf("Particle list size is %zu \n", particle_list->size());
   for(std::vector<ParticleState>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
     //std::cout << int(it->x()/res) << int(it->y()/res) << std::endl;  
     pt = Point(int(it->y()/res), int(it->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
@@ -115,8 +114,10 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list) {
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
   imshow( "Display window", grid_rgb);                   // Show our image inside it.
 
+  // sleep(0.1);
+
   waitKey(0);                                          // Wait for a keystroke in the window
-  destroyWindow( "Display window");
+  // destroyWindow( "Display window");
 }
 
 void Map::visualizePoints(vector<pair<int,int>>* points_list) {

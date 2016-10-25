@@ -1,26 +1,30 @@
 #include <motion_model.h>
 
 using namespace utils;
+using namespace data;
 
 namespace mm{
 
-MotionModel::MotionModel()
+MotionModel::MotionModel(data::Log *log)
 :
-std_dev_(0.1)
+std_dev_(0.05)
 {
 	utils_ = new UtilFunctions();
+	log_ = log;
 }
 
 std::vector<ps::ParticleState> MotionModel::applyMotionModel(std::vector<ps::ParticleState> 
 											particles, int iter_num){
 
+	std::vector<odom*> odom_values;
+	log_->getOdom(iter_num, odom_values);
 
-	double x0 = 0;
-	double y0 = 0;
-	double th0 = 1.57;
-	double x1 = 100;
-	double y1 = 0;
-	double th1 = 0;
+	double x0 = odom_values[0]->x;
+	double y0 = odom_values[0]->y;
+	double th0 = odom_values[0]->theta;
+	double x1 = odom_values[1]->x;
+	double y1 = odom_values[1]->y;
+	double th1 = odom_values[1]->theta;
 
 	// Change
 	double x_diff = x1 - x0;

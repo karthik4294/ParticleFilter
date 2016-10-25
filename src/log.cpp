@@ -67,7 +67,7 @@ namespace data {
         odoms.clear();
         for(int i = iter; i < iter + 2; i++) {
             if(i >= lidarScans_.size()) {
-                printf("[ERROR] Wrong access to lidar scans");
+                printf("%d [ERROR] Wrong access to lidar scans\n", i);
                 return;
             }
             double time_stamp = lidarScans_[i]->t;

@@ -19,7 +19,7 @@ int main(int argc , char *argv[]){
     data::lidar* lidar_val;
     log->getLidar(i, lidar_val);
     std::vector<int> ranges = lidar_val->ranges;
-    printf("%zu\n", ranges.size());
+    // printf("%zu\n", ranges.size());
   } 
   
   //map->displayMap();
@@ -40,9 +40,7 @@ int main(int argc , char *argv[]){
 
   int num_particles = 1;
 
-  sp::Sampler* sp = new sp::Sampler(map, num_particles);
-  
-  mm::MotionModel *mm = new mm::MotionModel();
+  mm::MotionModel *mm = new mm::MotionModel(log);
 
   std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  
@@ -51,13 +49,16 @@ int main(int argc , char *argv[]){
 
   std::vector<ps::ParticleState> new_particles;
 
-  new_particles = mm->applyMotionModel(particles, 0);
+  std::vector<ps::ParticleState> set;
 
-  map->visualizeParticles(&new_particles);
+  for(int i = 0; i < log->laserCount() - 1; i++){
+	new_particles = mm->applyMotionModel(particles, i);
+	particles = new_particles;
+	set.insert(set.end(), new_particles.begin(), new_particles.end());
+  }
 
-  new_particles = mm->applyMotionModel(new_particles, 0);
+  map->visualizeParticles(&set);
 
-  map->visualizeParticles(&new_particles);
 
   return 0;
 }
