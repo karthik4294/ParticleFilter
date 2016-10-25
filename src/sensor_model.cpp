@@ -72,7 +72,7 @@ namespace sensor_model {
 		double sum_res = 0.01; //Discretization for calculating sum
 		double probability = 0.0;
 		for (double i = lidar_range - 0.5; i < lidar_range + 0.5;
-		     double += sum_res) {
+		     i += sum_res) {
 			double norm_var = (i - ideal_range)/std_dev_;	
 			double probability_density = 
 			               (exp(-0.5*norm_var*norm_var)/sqrt(2*PI))/std_dev_;
@@ -98,7 +98,7 @@ namespace sensor_model {
 		double sum_res = 0.01; //Discretization for calculating sum
 		double probability = 0.0;
 		for (double i = lidar_range - 0.5; i < lidar_range + 0.5;
-		     double += sum_res) {
+		     i += sum_res) {
 			double norm_var = (lidar_range - ideal_range)/std_dev_;	
 			double probability_density = 
 			                         eta*lambda_short_*exp(-lambda_short_*i);
