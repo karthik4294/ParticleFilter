@@ -8,6 +8,40 @@
 #include <sensor_model.h>
 
 int main(int argc , char *argv[]){
+  std::string filename = argv[1];
+  //Read config params
+  
+  /*Params is a vector of the form
+    1. mm_std_xy
+    2. mm_std_theta
+    3. sensor_model_std
+    4. z_hit
+    5. z_short
+    6. lambda_short
+    7. z_max
+    8. z_rand
+  */
+  std::vector<double> params;
+  std::ifstream config_reader(filename);
+  
+  if(config_reader.good()) {
+    std::string config_line;
+    while(std::getline(config_reader, config_line)) {
+        if(!isalpha(config_line[0])) {
+            params.push_back(std::stod(config_line));
+        }
+    }
+  }
+    
+  double mm_std_xy = params[0];
+  double mm_std_theta = params[1];
+  double sensor_model_std = params[2];
+  double z_hit = params[3];
+  double z_short = params[4];
+  double lambda_short = params[5];
+  double z_max = params[6];
+  double z_rand = params[7];
+
   //Read Data
   data::Log* log = new data::Log("../data/log/robotdata1.log");
   std::vector<double> time_stamps = log->getTimeStamps();
@@ -16,10 +50,11 @@ int main(int argc , char *argv[]){
   Map *map = new Map("../data/map/wean.dat");	
   //Construct the sensor model
   sensor_model::LidarModel* sensor = new sensor_model::LidarModel(
-                                         log->getMaxRange(), 0.1, 5.0, 2.0, 2.0,
-                                         1.5, 0.5);
+                                         log->getMaxRange(), sensor_model_std,
+                                         z_hit, z_short, lambda_short, z_max,
+                                         z_rand);
   //Construct the sampler and sample initial points
-  int num_particles = 1;
+  int num_particles = 100;
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
   std::vector<ps::ParticleState> particles;
   sp->sampleUniform(particles);  

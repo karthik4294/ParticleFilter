@@ -14,7 +14,6 @@ namespace ps{
   {
     utils_ = new utils::UtilFunctions();
     ranges_ = new std::vector<int> ();
-    printf("hi %zu", ranges_->size());
     ranges_->clear();
   }
 
@@ -31,7 +30,6 @@ namespace ps{
     robot_state_.y(y_);
     robot_state_.theta(theta_);
     ranges_ = new std::vector<int> ();
-    printf("hi %zu", ranges_->size());
     ranges_->clear();
   }
 

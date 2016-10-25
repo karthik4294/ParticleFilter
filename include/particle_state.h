@@ -28,9 +28,8 @@ namespace ps{
 		double theta();		
 		RobotState robot_state();
 		double weight();
-		std::vector<int>* ranges() { std::cout<<"blabla "<<ranges_->size()<<std::endl; 
-			 return ranges_;};
-		
+		std::vector<int>* ranges() { return ranges_;};
+		void setRanges(std::vector<int>* ranges) { ranges_ = ranges;}
 		ParticleState rotate(double theta);
 
 	private:

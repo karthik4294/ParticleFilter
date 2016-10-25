@@ -206,7 +206,7 @@ void Map::visualizeIdealLidar(ParticleState p) {
   int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
   double theta0 = p.theta();
   int x1, y1, tx, ty;
-  printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
+  //printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
 
   vector<pair<int,int>> single_ray;
   vector<pair<int,int>> all_rays;
@@ -238,21 +238,22 @@ void Map::visualizeIdealLidar(ParticleState p) {
 void Map::getIdealLidar(ParticleState& p) {
 
     float theta;
-    std::cout<<p.ranges()->size()<<std::endl;
+    //std::cout<<p.ranges()->size()<<std::endl;
     p.ranges()->clear();
     int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
     double theta0 = p.theta();
     int x1, y1, tx, ty;
-    printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
+    //printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
 
     vector<pair<int,int>> single_ray;
 
     int dx, dy;
     int current_dist;
-
-    for (theta = 90; theta >= -90; theta--) 
+    double init_theta = 90;
+    double theta_increment = -(180.0/179.0);
+    for (int i = 0; i < 180; i++) 
     {
-      //theta = 0;
+      theta = init_theta + i*theta_increment;
 
       x1 = rangemax * cos(theta * PI/180);
       y1 = rangemax * sin(theta * PI/180);
@@ -267,15 +268,20 @@ void Map::getIdealLidar(ParticleState& p) {
       tx = new_point(0) + x0;
       ty = new_point(1) + y0;
 
-      printf("tx=%d, ty=%d\n", tx, ty);
-      printf("x1=%d, y1=%d\n", x1, y1);
+      //printf("tx=%d, ty=%d\n", tx, ty);
+      //printf("x1=%d, y1=%d\n", x1, y1);
 
       single_ray = interpolate(x0, y0, tx, ty);
 
       // calculate lidar distance after collision or max
-      dx = single_ray.back().first - x0;
-      dy = single_ray.back().second - y0;
-      current_dist = sqrt(dx*dx + dy*dy);
+      if(single_ray.empty()) {
+        current_dist = 0;
+      }
+      else {
+        dx = single_ray.back().first - x0;
+        dy = single_ray.back().second - y0;
+        current_dist = sqrt(dx*dx + dy*dy);
+      }
       p.ranges()->push_back(current_dist);
       
     }
