@@ -22,6 +22,7 @@ int main(int argc , char *argv[]){
     8. z_rand
     9. num_particles;
     10. Resampling randomization.
+    11. Max range of lidar
   */
   std::vector<double> params;
   std::ifstream config_reader(filename);
@@ -45,15 +46,16 @@ int main(int argc , char *argv[]){
   double z_rand = params[7];
   int num_particles = (int) params[8];
   double resampling_randomization = params[9];
+  double max_range = params[10];
   //Read Data
   data::Log* log = new data::Log("../data/log/robotdata1.log");
   std::vector<double> time_stamps = log->getTimeStamps();
 
   //Construct the map
-  Map *map = new Map("../data/map/wean.dat");	
+  Map *map = new Map("../data/map/wean.dat", max_range);	
   //Construct the sensor model
   sensor_model::LidarModel* sensor = new sensor_model::LidarModel(
-                                         log->getMaxRange(), sensor_model_std,
+                                         max_range, sensor_model_std,
                                          z_hit, z_short, lambda_short, z_max,
                                          z_rand);
   //Construct the sampler and sample initial points

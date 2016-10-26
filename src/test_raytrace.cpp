@@ -8,7 +8,7 @@
 
 int main(int argc , char *argv[]){
 
-  Map *map = new Map("../data/map/wean.dat");	
+  Map *map = new Map("../data/map/wean.dat", 1700);	
   ps::ParticleState new_particle(3825.0, 3000.0, 0, 5.0);
   //map->visualizeIdealLidar(new_particle);
   //vector <int> lidar_reading;

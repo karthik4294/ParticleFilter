@@ -4,7 +4,7 @@
 using namespace cv;
 using namespace ps;
 
-Map::Map(std::string filename)
+Map::Map(std::string filename, double max_range)
 {	
 
   // Defining certain constants instead of reading from file
@@ -18,7 +18,7 @@ Map::Map(std::string filename)
   // parse the map from dat file
   readMap(filename);
 
-  rangemax = 170;
+  rangemax = max_range/res;
   lidar_xoffset = 25;
 }
 
