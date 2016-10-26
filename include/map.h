@@ -16,7 +16,7 @@ class Map{
 
   public:
 
-    Map(std::string filename);
+    Map(std::string filename, double max_range);
 
     void readMap(std::string file);
     void printMap();
