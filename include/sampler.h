@@ -19,6 +19,7 @@ namespace sp{
 		void importanceResample(std::vector<ps::ParticleState> &ps,
 								double resampling_randomization);
 		void importanceCombResample(std::vector<ps::ParticleState> &ps, int comb_dist);
+		void lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_dist);
 
 	private:
 

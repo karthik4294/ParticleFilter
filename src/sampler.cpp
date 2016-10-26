@@ -114,4 +114,33 @@ void Sampler::importanceCombResample(std::vector<ps::ParticleState> &ps, int com
     ps = resampled_particles;
 }
 
+void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_dist) 
+{
+
+  std::vector<ps::ParticleState> resampled_particles;
+
+  int s = ps.size();
+  double max_r = 1/s;
+
+  double r = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX/max_r));
+
+  int i = 1;
+
+  double w = ps[i].weight();
+
+  for(int m = 0; m < s; m++){
+
+      double u = r + (i - 1)/m;
+      while(u > w){
+        i++;
+        w += ps[i].weight();
+      }
+
+      resampled_particles.push_back(ps[i]);
+  }
+
+  ps = resampled_particles;
+
+}
+
 }
