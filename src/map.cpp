@@ -22,6 +22,17 @@ Map::Map(std::string filename, double max_range)
   lidar_xoffset = 25;
 }
 
+Map::Map(Map* map) {
+  size_x = map->size_x;
+  size_y = map->size_y;
+  res = map->res;
+  grid_size = map->grid_size;
+  grid = map->grid;
+  grid_disp_ = map->grid_disp_;
+  rangemax = map->rangemax;
+  lidar_xoffset = map->lidar_xoffset;
+  free_space_ = map->free_space_;
+}
 void Map::readMap(std::string file){
 
   std::ifstream fin(file);
@@ -256,77 +267,61 @@ void Map::visualizeIdealLidar(ParticleState p) {
 
   
   }
+//void interpolate(double x0, double y0, ParticleState& p, int index, Eigen::Vector2d tip,
+//                     Eigen::Vector2d origin, double theta, Mat grid_p);
 
-void Map::getIdealLidar(ParticleState& p) {
-    //Mat grid_rgb = grid_disp_.clone();
-    float theta;
+void Map::getIdealLidar(ParticleState* p) {
+    //int num_threads = thread::hardware_concurrency();
+    //cout<<"max threads are "<<num_threads<<endl;
+    //ctpl::thread_pool pool(num_threads);
+    //Mat grid_p = grid.clone();
+    //float theta;
     //std::cout<<p.ranges()->size()<<std::endl;
-    p.ranges()->clear();
-    int x0 = (int) (p.x() + lidar_xoffset) / res, y0 = (int) p.y() / res;
-    double theta0 = p.theta();
-    int x1, y1, tx, ty;
-    //printf("x0=%d, y0=%d theta0=%f\n", x0, y0, theta0);
-    Eigen::Vector2d point(50, 0);
-    Eigen::Rotation2Dd t(theta0);
-    t.toRotationMatrix();
-    Eigen::Vector2d new_point1 = t * point;
-    //arrowLine(grid_rgb, Point(y0, x0), Point(y0 + new_point1(1), x0 + new_point1(0)), Scalar(0,0,0));
-    vector<pair<int,int>> single_ray;
-    //vector<pair<int,int>> all_rays;
-    int dx, dy;
-    int current_dist;
-    double init_theta = 90;
-    double theta_increment = -(180.0/179.0);
-    int r = 255;
-    int g = 0;
-    int b = 0;
-    for (int i = 0; i < 180; i++) 
-    {
-      theta = init_theta + i*theta_increment;
-
-      x1 = rangemax * cos(theta * PI/180);
-      y1 = rangemax * sin(theta * PI/180);
-
-
-      
-      Eigen::Vector2d point(x1, y1);
-      Eigen::Vector2d new_point = t * point;
-
-      tx = new_point(0) + x0;
-      ty = new_point(1) + y0;
-
-      //printf("tx=%d, ty=%d\n", tx, ty);
-      //printf("x1=%d, y1=%d\n", x1, y1);
-
-      single_ray = interpolate(x0, y0, tx, ty);
-      /*if (r > 0 ) {
-        double percentage = (1-2*i/180.0);
-        r = (int)((1.0-(2.0*i/180.0))*255.0);
-        g = 255 - r;
-        }
-      else {
-        r = 0;
-        b = (int)(((2.0*i/180.0)-1)*255.0);
-        g = 255 - b;
-        
-        }
-        
-      visualizeRayTrace(grid_rgb, &p, &single_ray, b, g, r);
-      all_rays.insert(all_rays.end(), single_ray.begin(), single_ray.end());*/
-      // calculate lidar distance after collision or max
-      if(single_ray.empty()) {
-        current_dist = 0;
-      }
-      else {
-        dx = single_ray.back().first - x0;
-        dy = single_ray.back().second - y0;
-        current_dist = sqrt(dx*dx + dy*dy);
-      }
-      p.ranges()->push_back(current_dist);
-      
+    //p->ranges()->clear();
+    double x0 = p->x();
+    double y0 = p->y();
+    double theta = p->theta();
+    std::vector<Eigen::Vector2d> rays = p->getRayTips();
+    if(p->ranges().size() != 180) {
+      cout<<"Error in laser ranges"<<endl;
     }
-  /*namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
-  imshow( "Display window", grid_rgb);                   // Show our image inside it.
-  waitKey(0);                                          // Wait for a keystroke in the window
-  destroyWindow( "Display window");*/
+    for(int i = 0; i< p->ranges().size(); i++) {
+      p->ranges().at(i) = 0;
+    }
+    for(int i = 1; i < rays.size(); i++) {
+      Eigen::Vector2d origin = rays[0];
+      Eigen::Vector2d tip = rays[i];
+      Eigen::Rotation2Dd t(theta);
+      Eigen::Matrix2d rot_mat = t.toRotationMatrix();
+      origin = rot_mat*origin;
+      origin(0) = origin(0) + x0;
+      origin(1) = origin(1) + y0;
+      
+      tip = rot_mat*tip;
+      tip(0) = tip(0) + x0;
+      tip(1) = tip(1) + y0;
+
+      Point p1(origin(0), origin(1));
+      Point p2(tip(0), tip(1));
+      Point hit;
+      LineIterator it(grid, p1, p2);
+      for(int i = 0; i < it.count; i++, ++it) {
+        double val = grid.at<double>(it.pos());
+        if(val < 1.0) {
+          hit = it.pos();
+        }
+      }
+      double distance = sqrt((hit.x-p1.x)*(hit.x-p1.x)
+                            + (hit.x-p1.x)*(hit.x-p1.x));
+
+      p->ranges().at(i-1) = distance;
+    }
+
 }
+
+void Map::interpolate1(double x0, double y0, ParticleState& p, int index, Eigen::Vector2d tip,
+                     Eigen::Vector2d origin, double theta, Mat& grid_p) {
+      //cout<<"\t index is"<<index<<endl;
+      
+}
+

@@ -22,7 +22,7 @@ void Sampler::constructFullFreeSpace(){
 	}
 }
 
-void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
+void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps, double max_range){
 
 	std::random_device rd;
   std::mt19937 gen(rd());
@@ -35,10 +35,8 @@ void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
   	p_state.x(std::get<0>(full_free_space_[num]));
   	p_state.y(std::get<1>(full_free_space_[num]));
   	p_state.theta(std::get<2>(full_free_space_[num]));
-    std::vector<int>* ranges = new std::vector<int> ();
-    ranges->clear();
-    p_state.setRanges(ranges);
-    
+    p_state.setRanges();
+    p_state.setRayTips(max_range);
     // std::cout << "Sampled point " << p_state.x() << " " << p_state.y() << " " << p_state.theta() << std::endl; 
 
   	p_state.weight(1.0);

@@ -15,8 +15,14 @@ z_max
 z_rand
 2.0
 num_particles
-30000
+10000
 resampling randomization
+<<<<<<< Updated upstream
+0.1
+=======
 0.02
+>>>>>>> Stashed changes
 max_range
 1700
+comb_dist
+2

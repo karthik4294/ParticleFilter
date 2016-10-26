@@ -13,8 +13,8 @@ namespace ps{
       weight_(weight)
   {
     utils_ = new utils::UtilFunctions();
-    ranges_ = new std::vector<int> ();
-    ranges_->clear();
+    //ranges_ = new std::vector<int> ();
+    //ranges_->clear();
   }
 
   ParticleState::ParticleState(double x, double y, double theta, double weight)
@@ -29,8 +29,10 @@ namespace ps{
     robot_state_.x(x_);
     robot_state_.y(y_);
     robot_state_.theta(theta_);
-    ranges_ = new std::vector<int> ();
-    ranges_->clear();
+    //ranges_ = new std::vector<int> ();
+    //ranges_->clear();
+
+
   }
 
   void ParticleState::x(double x){
@@ -84,6 +86,20 @@ namespace ps{
 
     return trans_state;	
 
+  }
+
+  void ParticleState::setRayTips(double max_range) {
+    double init_theta = -90;
+    double theta_increment = 180/179;
+    Eigen::Vector2d origin(25,0);
+    ray_tips_.push_back(origin);
+    for(int i = 0; i<180; i++) {
+      double theta = init_theta + (double)(i*theta_increment);
+      double x = cos((theta*PI)/180);
+      double y = sin((theta*PI)/180);
+      Eigen::Vector2d point(x,y);
+      ray_tips_.push_back(point);
+    }
   }
 
 } //namepsace

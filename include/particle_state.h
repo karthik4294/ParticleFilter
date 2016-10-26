@@ -28,8 +28,10 @@ namespace ps{
 		double theta();		
 		RobotState robot_state();
 		double weight();
-		std::vector<int>* ranges() { return ranges_;};
-		void setRanges(std::vector<int>* ranges) { ranges_ = ranges;}
+		std::vector<int> ranges() { return ranges_;};
+		void setRanges() { ranges_.resize(180,0);}
+		void setRayTips(double max_range);
+		std::vector<Eigen::Vector2d> getRayTips() {return ray_tips_;}
 		ParticleState rotate(double theta);
 
 	private:
@@ -43,7 +45,10 @@ namespace ps{
 		utils::UtilFunctions *utils_;
 
 		//Fill in ray ranges from ray-casting here
-		std::vector<int>* ranges_;
+		std::vector<int> ranges_;
+
+		//End points of rays
+		std::vector<Eigen::Vector2d> ray_tips_;
 
 	};
 }

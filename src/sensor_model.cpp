@@ -34,12 +34,12 @@ namespace sensor_model {
 		particle->weight(1.0);
 
 		std::vector<int>* lidar_ranges = lidar->ranges;
-		std::vector<int>* ideal_ranges = particle->ranges();
+		std::vector<int> ideal_ranges = particle->ranges();
 		
 		//Sanity check
-		if(ideal_ranges->size() != lidar_ranges->size()) {
+		if(ideal_ranges.size() != lidar_ranges->size()) {
 			printf("[SENSOR_MODEL_ERROR] Lidar range and ideal range size" 
-				    "mismatch %zu, %zu \n", ideal_ranges->size(),
+				    "mismatch %zu, %zu \n", ideal_ranges.size(),
 				  lidar_ranges->size());
 			return;
 		}
@@ -56,7 +56,7 @@ namespace sensor_model {
       //printf("Hello World from thread = %d\n", tid);
 
 			//Get the ray-casted range
-			int ideal_range = ideal_ranges->at(i);
+			int ideal_range = ideal_ranges[i];
 
 			//Get the measured range
 			int lidar_range = lidar_ranges->at(i);
@@ -80,9 +80,10 @@ namespace sensor_model {
 			//Update the particle weight
 			if(p == 0.0) {
 				p = SMALL_VALUE;
+				cout<<"small value is "<<SMALL_VALUE<<endl;
 			}
 #pragma omp atomic
-			wt = wt + log(p);
+			wt = wt + fastlog(p);
 		}
 
 			particle->weight(wt);

@@ -17,7 +17,7 @@ class Map{
   public:
 
     Map(std::string filename, double max_range);
-
+    Map(Map* map);
     void readMap(std::string file);
     void printMap();
     void displayMap();
@@ -38,7 +38,9 @@ class Map{
 
     vector<pair<int,int>> interpolate(int x1, int y1, int x2, int y2);
     void visualizeIdealLidar(ParticleState p);
-    void getIdealLidar(ParticleState& p);
+    void getIdealLidar(ParticleState* p);
+    void interpolate1(double x0, double y0, ParticleState& p, int index, Eigen::Vector2d tip,
+                     Eigen::Vector2d origin, double theta, Mat& grid_p);
 
   private:
 
