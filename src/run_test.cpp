@@ -98,6 +98,9 @@ int main(int argc , char *argv[]){
       //#pragma omp parallel for  
       for (int i = 0; i < num_particles; i++) {
         map->getIdealLidar(particles[i]);
+      }
+
+      for (int i = 0; i < num_particles; i++) {
         sensor->updateWeight(&particles[i], log->getLidar(time));
       }
 
@@ -107,8 +110,8 @@ int main(int argc , char *argv[]){
         getchar();*/
       //Now resample the particles
       //Possible speedup : pass a vector to add weights in place
-      sp->importanceResample(particles, resampling_randomization);
-      // sp->importanceCombResample(particles, comb_dist);
+      //sp->importanceResample(particles, resampling_randomization);
+       sp->importanceCombResample(particles, comb_dist);
       printf("resampled for iter %d, %zu \n", iter, particles.size());
 
       //Visualize the resampled particles

@@ -1,5 +1,7 @@
 //Sensor Model source
 #include <sensor_model.h>
+#include <fastexp.h>
+
 
 namespace sensor_model {
 
@@ -44,7 +46,14 @@ namespace sensor_model {
 		/*printf("************* \n");
 		printf("New Particle \n");
 		printf("************* \n");*/
+			double wt  = particle->weight();
+      omp_set_num_threads(2);
+#pragma omp parallel for
 		for(int i = 0; i < lidar_ranges->size(); i++) {
+
+    //int tid = omp_get_thread_num();
+    //if (tid != 0)
+      //printf("Hello World from thread = %d\n", tid);
 
 			//Get the ray-casted range
 			int ideal_range = ideal_ranges->at(i);
@@ -69,17 +78,18 @@ namespace sensor_model {
 			           + z_rand_*p_rand;
 			//printf("Probability is %f \n", p);  
 			//Update the particle weight
-			double wt  = particle->weight();
 			if(p == 0.0) {
 				p = SMALL_VALUE;
 			}
+#pragma omp atomic
 			wt = wt + log(p);
+		}
+
 			particle->weight(wt);
-		}
-		if(particle->weight() > 0.001) {
-			//printf("weight for particle %f \n", particle->weight());
-			//getchar();
-		}
+		//if(particle->weight() > 0.001) {
+			////printf("weight for particle %f \n", particle->weight());
+			////getchar();
+		//}
 		
 	}
 
@@ -94,7 +104,7 @@ namespace sensor_model {
 		     i += sum_res) {
 			double norm_var = (i - ideal_range)/std_dev_;	
 			double probability_density = 
-			               (exp(-0.5*norm_var*norm_var)/sqrt(2*PI))/std_dev_;
+			               (fastexp(-0.5*norm_var*norm_var)/sqrt(2*PI))/std_dev_;
 			probability += probability_density*sum_res;
 		}
 		return (probability);
@@ -111,7 +121,7 @@ namespace sensor_model {
 		//Now calculate non-zero probability
 		
 		//Calculate normalizer
-		double eta = 1/(1 - exp(-lambda_short_*ideal_range));
+		double eta = 1/(1 - fastexp(-lambda_short_*ideal_range));
 
 		//Calculate the probability
 		double sum_res = 0.01; //Discretization for calculating sum
@@ -120,7 +130,7 @@ namespace sensor_model {
 		     i += sum_res) {
 			double norm_var = (lidar_range - ideal_range)/std_dev_;	
 			double probability_density = 
-			                         eta*lambda_short_*exp(-lambda_short_*i);
+			                         eta*lambda_short_*fastexp(-lambda_short_*i);
 			probability += probability_density*sum_res;
 		}
 		return (probability);
