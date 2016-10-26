@@ -6,11 +6,12 @@
 #include <sampler.h>
 #include <motion_model.h>
 #include <sensor_model.h>
+#include <chrono>
 
 int main(int argc , char *argv[]){
   std::string filename = argv[1];
   //Read config params
-  
+
   /*Params is a vector of the form
     1. mm_std_xy
     2. mm_std_theta
@@ -24,19 +25,19 @@ int main(int argc , char *argv[]){
     10. Resampling randomization.
     11. Max range of lidar
     12. Comb sampler distance
-  */
+    */
   std::vector<double> params;
   std::ifstream config_reader(filename);
-  
+
   if(config_reader.good()) {
     std::string config_line;
     while(std::getline(config_reader, config_line)) {
-        if(!isalpha(config_line[0])) {
-            params.push_back(std::stod(config_line));
-        }
+      if(!isalpha(config_line[0])) {
+        params.push_back(std::stod(config_line));
+      }
     }
   }
-    
+
   double mm_std_xy = params[0];
   double mm_std_theta = params[1];
   double sensor_model_std = params[2];
@@ -57,9 +58,9 @@ int main(int argc , char *argv[]){
   Map *map = new Map("../data/map/wean.dat", max_range);	
   //Construct the sensor model
   sensor_model::LidarModel* sensor = new sensor_model::LidarModel(
-                                         max_range, sensor_model_std,
-                                         z_hit, z_short, lambda_short, z_max,
-                                         z_rand);
+      max_range, sensor_model_std,
+      z_hit, z_short, lambda_short, z_max,
+      z_rand);
   //Construct the sampler and sample initial points
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
   std::vector<ps::ParticleState> particles;
@@ -71,6 +72,15 @@ int main(int argc , char *argv[]){
   //Delete Later
   printf("Max Range is %d \n", log->getMaxRange());
   //Delete later
+  using namespace std::chrono;
+  typedef std::chrono::high_resolution_clock Clock;
+  typedef std::chrono::duration<double> dsec;
+
+  auto init_start = Clock::now();
+  double init_time = 0;
+  double sensor_update_time;
+  auto sensor_update_start = Clock::now();
+
   //Now run the particle filter
   for(int iter = 0; iter < time_stamps.size(); iter++) {
     double time = time_stamps[iter];
@@ -82,6 +92,7 @@ int main(int argc , char *argv[]){
 
     //Now check if we need to do a sensor update
     if(log->isLidar(time)) {
+      sensor_update_start = Clock::now();
       //Do sensor update and importance resampling
       //Candidate for parallelization
       //#pragma omp parallel for  
@@ -91,16 +102,25 @@ int main(int argc , char *argv[]){
       }
 
       /*for(int i = 0; i<num_particles; i++) {
-            cout<<"weight is :"<<particles[i].weight()<<endl;
+        cout<<"weight is :"<<particles[i].weight()<<endl;
         }
-      getchar();*/
+        getchar();*/
       //Now resample the particles
       //Possible speedup : pass a vector to add weights in place
       sp->importanceResample(particles, resampling_randomization);
       // sp->importanceCombResample(particles, comb_dist);
       printf("resampled for iter %d, %zu \n", iter, particles.size());
+
       //Visualize the resampled particles
       map->visualizeParticles(&particles, 1);
+
+      init_time += duration_cast<dsec>(Clock::now() - init_start).count();
+      printf("Time from start: %lf. ", init_time);
+
+      sensor_update_time = duration_cast<dsec>(Clock::now() - sensor_update_start).count();
+      printf("Sensor update duration: %lf.\n", sensor_update_time);
+
+
 
       //getchar();
     }
@@ -114,23 +134,23 @@ int main(int argc , char *argv[]){
     }
 
     //Visualize the new particles
-   
+
   }
 
 
 
 
-/*  std::vector<ps::ParticleState> new_particles;
+  /*  std::vector<ps::ParticleState> new_particles;
 
-  std::vector<ps::ParticleState> set;
+      std::vector<ps::ParticleState> set;
 
-  for(int i = 0; i < log->laserCount() - 1; i++){
-	new_particles = mm->applyMotionModel(particles, i);
-	particles = new_particles;
-	set.insert(set.end(), new_particles.begin(), new_particles.end());
-  }
+      for(int i = 0; i < log->laserCount() - 1; i++){
+      new_particles = mm->applyMotionModel(particles, i);
+      particles = new_particles;
+      set.insert(set.end(), new_particles.begin(), new_particles.end());
+      }
 
-  map->visualizeParticles(&set);*/
+      map->visualizeParticles(&set);*/
 
 
   return 0;
