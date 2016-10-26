@@ -74,9 +74,46 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resa
       particle.y((1 + resampling_randomization*(random-0.5))*particle.y());
       particle.theta((1 + resampling_randomization*(random-0.5))*particle.theta());
       particle.weight(1.0); 
-      resampled_particles.push_back(particle);
-      
+      resampled_particles.push_back(particle);   
     }
     ps = resampled_particles;
-  }
+}
+
+
+void Sampler::importanceCombResample(std::vector<ps::ParticleState> &ps, int comb_dist) 
+{
+    std::vector <double> input_weights;
+    std::vector <double> comb_weights;
+
+    for(std::vector<ps::ParticleState>::iterator it = ps.begin(); it != ps.end(); ++it) {
+      input_weights.push_back(it->weight());
+    }
+
+    double min_weight = *std::min_element(input_weights.begin(), input_weights.end());
+    for(int i = 0; i <input_weights.size(); i++) {
+      input_weights[i] += abs(min_weight);
+      //cout<<"Modded weight: "<<input_weights[i]<<endl;
+    }
+
+    std::stable_sort(input_weights.begin(), input_weights.end());
+    std::reverse(input_weights.begin(), input_weights.end());
+    
+    for(int i = 0; i < input_weights.size(); i++){
+      if(i % comb_dist == 0)
+        comb_weights.push_back(input_weights[i]);
+    }
+
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+    std::discrete_distribution<> d(comb_weights.begin(), comb_weights.end());
+
+    std::vector<ps::ParticleState> resampled_particles;
+
+    for(int n=0; n < ps.size(); ++n) {
+      resampled_particles.push_back(ps[d(gen)]);
+    }
+    ps = resampled_particles;
+}
+
 }

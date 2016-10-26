@@ -17,6 +17,7 @@ namespace sp{
 		void constructFullFreeSpace();
 		void importanceResample(std::vector<ps::ParticleState> &ps,
 								double resampling_randomization);
+		void importanceCombResample(std::vector<ps::ParticleState> &ps, int comb_dist);
 
 	private:
 
