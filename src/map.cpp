@@ -56,24 +56,48 @@ void Map::readMap(std::string file){
       break;
   }
 
+  // count = 0;
+  // while ( fin >> val){
+  //   int temprow = count / size_x;
+  //   int tempcol = count % size_x;
+  //   grid.at<double>((size_y - 1) - tempcol, temprow) = val;
+  //   if(val == -1) {
+  //     grid_disp_.at<Vec3b>((size_y - 1) - tempcol, temprow, 0) = Vec3b(0,0,0);
+  //   }
+  //   else {
+  //     int b = (val)*255;
+  //     int g = (val)*255;
+  //     int r = (val)*255;
+  //     grid_disp_.at<Vec3b>((size_y - 1) - tempcol, temprow, 0) = Vec3b(b,g,r);
+  //   }
+  //   //printf(" %f ", val);
+  //   if (val == 1.0){
+  //     double x = (size_y - 1) - tempcol;
+  //     double y = temprow;
+  //     for(double j = 1; j < res; j++)
+  //       free_space_.push_back(std::make_pair((x*res) + j, (y*res) + j));
+  //   }
+  //   count++;
+  // }
+
   count = 0;
   while ( fin >> val){
     int temprow = count / size_x;
     int tempcol = count % size_x;
-    grid.at<double>((size_y - 1) - tempcol, temprow) = val;
+    grid.at<double>(temprow, tempcol) = val;
     if(val == -1) {
-      grid_disp_.at<Vec3b>((size_y - 1) - tempcol, temprow, 0) = Vec3b(0,0,0);
+      grid_disp_.at<Vec3b>(temprow, tempcol, 0) = Vec3b(0,0,0);
     }
     else {
       int b = (val)*255;
       int g = (val)*255;
       int r = (val)*255;
-      grid_disp_.at<Vec3b>((size_y - 1) - tempcol, temprow, 0) = Vec3b(b,g,r);
+      grid_disp_.at<Vec3b>(temprow, tempcol, 0) = Vec3b(b,g,r);
     }
     //printf(" %f ", val);
     if (val == 1.0){
-      double x = (size_y - 1) - tempcol;
-      double y = temprow;
+      double x = temprow;
+      double y = tempcol;
       for(double j = 1; j < res; j++)
         free_space_.push_back(std::make_pair((x*res) + j, (y*res) + j));
     }

@@ -30,6 +30,7 @@ int main(int argc , char *argv[]){
     9. num_particles;
     10. Resampling randomization.
     11. Max range of lidar
+    12. Comb dist
   */
   std::vector<double> params;
   std::ifstream config_reader(filename);
@@ -55,6 +56,7 @@ int main(int argc , char *argv[]){
   int num_particles = (int) params[8];
   double resampling_randomization = params[9];
   double max_range = params[10];
+  double comb_dist = params[11];
   //Read Data
   data::Log* log = new data::Log("../data/log/robotdata1.log");
   std::vector<double> time_stamps = log->getTimeStamps();
@@ -128,7 +130,8 @@ int main(int argc , char *argv[]){
       //Possible speedup : pass a vector to add weights in place
       map->visualizeParticles(&particles, 1);
       //getchar();
-      sp->importanceResample(particles, resampling_randomization);
+      // sp->importanceResample(particles, resampling_randomization);
+      sp->importanceCombResample(particles, comb_dist);
       //printf("resampled for iter %d, %zu \n", iter, particles.size());
       //Visualize the resampled particles
       map->visualizeParticles(&particles, 1);
