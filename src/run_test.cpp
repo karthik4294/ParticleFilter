@@ -21,6 +21,7 @@ int main(int argc , char *argv[]){
     7. z_max
     8. z_rand
     9. num_particles;
+    10. Resampling randomization.
   */
   std::vector<double> params;
   std::ifstream config_reader(filename);
@@ -43,6 +44,7 @@ int main(int argc , char *argv[]){
   double z_max = params[6];
   double z_rand = params[7];
   int num_particles = (int) params[8];
+  double resampling_randomization = params[9];
   //Read Data
   data::Log* log = new data::Log("../data/log/robotdata1.log");
   std::vector<double> time_stamps = log->getTimeStamps();
@@ -83,8 +85,14 @@ int main(int argc , char *argv[]){
         map->getIdealLidar(particles[i]);
         sensor->updateWeight(&particles[i], log->getLidar(time));
       }
+
+      /*for(int i = 0; i<num_particles; i++) {
+            cout<<"weight is :"<<particles[i].weight()<<endl;
+        }
+      getchar();*/
       //Now resample the particles
-      sp->importanceResample(particles);
+      //Possible speedup : pass a vector to add weights in place
+      sp->importanceResample(particles, resampling_randomization);
       printf("resampled for iter %d, %zu \n", iter, particles.size());
       //Visualize the resampled particles
       map->visualizeParticles(&particles, 1);

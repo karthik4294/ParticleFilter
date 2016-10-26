@@ -15,7 +15,8 @@ namespace sp{
 		Sampler(Map *map, int num_particles);
 		void sampleUniform(std::vector<ps::ParticleState>& ps);
 		void constructFullFreeSpace();
-		void importanceResample(std::vector<ps::ParticleState> &ps);
+		void importanceResample(std::vector<ps::ParticleState> &ps,
+								double resampling_randomization);
 
 	private:
 

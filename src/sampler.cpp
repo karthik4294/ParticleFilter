@@ -47,7 +47,7 @@ void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps){
 	}
 }
 
-void Sampler::importanceResample(std::vector<ps::ParticleState> &ps)
+void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resampling_randomization)
 {
 
     std::vector <double> input_weights;
@@ -55,7 +55,11 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps)
     for(std::vector<ps::ParticleState>::iterator it = ps.begin(); it != ps.end(); ++it) {
       input_weights.push_back(it->weight());
     }
-
+    double min_weight = *std::min_element(input_weights.begin(), input_weights.end());
+    for(int i = 0; i <input_weights.size(); i++) {
+      input_weights[i] += abs(min_weight);
+      //cout<<"Modded weight: "<<input_weights[i]<<endl;
+    }
     std::random_device rd;
     std::mt19937 gen(rd());
 
@@ -64,7 +68,12 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps)
     std::vector<ps::ParticleState> resampled_particles;
 
     for(int n=0; n < ps.size(); ++n) {
-      resampled_particles.push_back(ps[d(gen)]);
+      ps::ParticleState particle = ps[d(gen)];
+      particle.x((1 + resampling_randomization*(rand()-0.5))*particle.x());
+      particle.y((1 + resampling_randomization*(rand()-0.5))*particle.y());
+      particle.theta((1 + resampling_randomization*(rand()-0.5))*particle.theta());
+      particle.weight(1.0); 
+      resampled_particles.push_back(particle);
       
     }
     ps = resampled_particles;

@@ -69,7 +69,12 @@ namespace sensor_model {
 			           + z_rand_*p_rand;
 			//printf("Probability is %f \n", p);  
 			//Update the particle weight
-			particle->weight(particle->weight()*p);
+			double wt  = particle->weight();
+			if(p == 0.0) {
+				p = SMALL_VALUE;
+			}
+			wt = wt + log(p);
+			particle->weight(wt);
 		}
 		if(particle->weight() > 0.001) {
 			//printf("weight for particle %f \n", particle->weight());

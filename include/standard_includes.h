@@ -1,9 +1,7 @@
 #ifndef STANDARD_INCLUDES_H
 #define STANDARD_INCLUDES_H
 
-#ifndef PI
-#define PI 3.141592653589
-#endif
+
 
 #include <iostream>
 #include <vector>
@@ -21,5 +19,13 @@
 #include <random>
 #include <cmath>
 #include <omp.h>
+#include <limits>
+
+#ifndef PI
+#define PI M_PI
+#endif
+#ifndef SMALL_VALUE
+#define SMALL_VALUE std::numeric_limits<double>::min()
+#endif
 
 #endif
