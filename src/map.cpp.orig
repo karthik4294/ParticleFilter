@@ -384,7 +384,11 @@ void Map::getIdealLidar(ParticleState* p) {
       double distance = sqrt((hit.x-p1.x)*(hit.x-p1.x)
                             + (hit.y-p1.y)*(hit.y-p1.y));
 
+<<<<<<< Updated upstream
+      p->ranges().at(i-1) = (int)distance;
+=======
       p->ranges().at(i-1) = res*distance;
+>>>>>>> Stashed changes
       //cout<<"\t index is"<<index<<endl;
 
     }

@@ -4,7 +4,7 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
-
+#include <log.h>
 
 #include <particle_state.h>
 
@@ -39,6 +39,7 @@ class Map{
     vector<pair<int,int>> interpolate(int x1, int y1, int x2, int y2);
     void visualizeIdealLidar(ParticleState p);
     void getIdealLidar(ParticleState* p);
+    void getIdealLidarVis(ParticleState* p, data::lidar* lidar);
     void interpolate1(Point p1, Point p2, ParticleState* p, int index);
 
   private:
