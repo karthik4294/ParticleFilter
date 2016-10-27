@@ -53,11 +53,11 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resa
     for(std::vector<ps::ParticleState>::iterator it = ps.begin(); it != ps.end(); ++it) {
       input_weights.push_back(it->weight());
     }
-    double min_weight = *std::min_element(input_weights.begin(), input_weights.end());
+    /*double min_weight = *std::min_element(input_weights.begin(), input_weights.end());
     for(int i = 0; i <input_weights.size(); i++) {
       input_weights[i] += abs(min_weight);
       //cout<<"Modded weight: "<<input_weights[i]<<endl;
-    }
+    }*/
     std::random_device rd;
     std::mt19937 gen(rd());
 

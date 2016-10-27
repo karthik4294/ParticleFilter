@@ -315,9 +315,9 @@ void Map::getIdealLidar(ParticleState* p) {
     if(p->ranges().size() != 180) {
       cout<<"Error in laser ranges"<<endl;
     }
-    for(int i = 0; i< p->ranges().size(); i++) {
+    /*for(int i = 0; i< p->ranges().size(); i++) {
       p->ranges().at(i) = 0;
-    }
+    }*/
     //Delete Later
     /*cv::Scalar color(0,255,0);
     int b = 255;

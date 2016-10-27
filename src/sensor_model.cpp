@@ -77,15 +77,16 @@ namespace sensor_model {
 			//Find the total weighted probability
 			double p = z_hit_*p_hit + z_short_*p_short + z_max_*p_max
 			           + z_rand_*p_rand;
+			p = 0.01*p + 1.0;
 			//printf("Probability is %f \n", p);  
 			//Update the particle weight
 			//cout<<"phit is "<<p_hit<<endl;
-			if(p == 0.0) {
+			/*if(p == 0.0) {
 				p = SMALL_VALUE;
 				cout<<"small value is "<<SMALL_VALUE<<endl;
-			}
+			}*/
 
-			wt = wt + fastlog(p);
+			wt = wt*p;
 		}
 
 			particle->weight(wt);
