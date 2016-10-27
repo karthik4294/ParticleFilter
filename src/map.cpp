@@ -129,7 +129,7 @@ void Map::displayMap(){
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
   imshow( "Display window", grid_disp_);                   // Show our image inside it.
-  waitKey(0);                                          // Wait for a keystroke in the window
+  waitKey(1);                                          // Wait for a keystroke in the window
 }
 
 void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
@@ -176,7 +176,7 @@ void Map::visualizePoints(vector<pair<int,int>>* points_list) {
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
   imshow( "Display window", grid_rgb);                   // Show our image inside it.
 
-  waitKey(0);                                          // Wait for a keystroke in the window
+  waitKey(1);                                          // Wait for a keystroke in the window
   destroyWindow( "Display window");
 }
 
@@ -295,10 +295,10 @@ void Map::visualizeIdealLidar(ParticleState p) {
 //                     Eigen::Vector2d origin, double theta, Mat grid_p);
 
 void Map::getIdealLidar(ParticleState* p) {
-    //int num_threads = thread::hardware_concurrency();
+    int num_threads = thread::hardware_concurrency();
     //cout<<"max threads are "<<num_threads<<endl;
     //ctpl::thread_pool pool(num_threads);
-    //Mat grid_p = grid.clone();
+    //Mat grid_p = grid_disp_.clone();
     //float theta;
     //std::cout<<p.ranges()->size()<<std::endl;
     //p->ranges()->clear();
@@ -312,11 +312,28 @@ void Map::getIdealLidar(ParticleState* p) {
     for(int i = 0; i< p->ranges().size(); i++) {
       p->ranges().at(i) = 0;
     }
+    //Delete Later
+    /*cv::Scalar color(0,255,0);
+    int b = 255;
+    int g = 0;
+    int r = 0;
+    Point orig(y0/res, x0/res);
+    color = cv::Scalar(b,g,r);
+    circle(grid_p, orig, 5, color);*/
+    //Delete Later*
     for(int i = 1; i < rays.size(); i++) {
       Eigen::Vector2d origin = rays[0];
+      
       Eigen::Vector2d tip = rays[i];
+
       Eigen::Rotation2Dd t(theta);
       Eigen::Matrix2d rot_mat = t.toRotationMatrix();
+
+      //Delete Later
+      /*Eigen::Vector2d x_axis(rangemax*res,0);
+      x_axis = rot_mat*x_axis;
+      Point x_tip((x_axis(1) + y0)/res,(x_axis(0) + x0)/res);*/
+      //Delete Later
       origin = rot_mat*origin;
       origin(0) = origin(0) + x0;
       origin(1) = origin(1) + y0;
@@ -325,27 +342,54 @@ void Map::getIdealLidar(ParticleState* p) {
       tip(0) = tip(0) + x0;
       tip(1) = tip(1) + y0;
 
-      Point p1(origin(0), origin(1));
-      Point p2(tip(0), tip(1));
-      Point hit;
+      //Scale to image coords
+      origin(0) = origin(0)/res;
+      origin(1) = origin(1)/res;
+
+      tip(0) = tip(0)/res;
+      tip(1) = tip(1)/res;
+
+      
+      Point p1(origin(1), origin(0));
+      Point p2(tip(1), tip(0));
+      //Point hit;
+      //pool.push(std::bind(&Map::interpolate1, this, p1, p2, p, i));
+      interpolate1(p1,p2,p,i);
+
+    }
+    //pool.stop(true);
+    //Delete Later
+    //namedWindow( "Diag", WINDOW_AUTOSIZE );
+    //imshow("Diag", grid_p);
+    //waitKey(0);
+    //destroyWindow("Diag");
+    //Delete Later
+}
+
+void Map::interpolate1(Point p1, Point p2, ParticleState* p, int index) {
       LineIterator it(grid, p1, p2);
-      for(int i = 0; i < it.count; i++, ++it) {
+      Point hit;
+      for(int j = 0; j < it.count; j++, ++it) {
         double val = grid.at<double>(it.pos());
         if(val < 1.0) {
           hit = it.pos();
         }
       }
+      /*if(i < 90) {
+        color = cv::Scalar(0,0,255);
+      }
+      else {
+        color = cv::Scalar(0,255,0);
+      }*/
+      //Delete Later
+      //circle(grid_p, hit, 2, color);
+      //circle(grid_p, p2, 2, cv::Scalar(0,0,0));
+      //line(grid_p, p1, x_tip, cv::Scalar(255,0,0));
+      //Delete Later
       double distance = sqrt((hit.x-p1.x)*(hit.x-p1.x)
-                            + (hit.x-p1.x)*(hit.x-p1.x));
+                            + (hit.y-p1.y)*(hit.y-p1.y));
 
-      p->ranges().at(i-1) = distance;
-    }
-
-}
-
-void Map::interpolate1(double x0, double y0, ParticleState& p, int index, Eigen::Vector2d tip,
-                     Eigen::Vector2d origin, double theta, Mat& grid_p) {
+      p->ranges().at(index-1) = distance;
       //cout<<"\t index is"<<index<<endl;
-      
 }
 

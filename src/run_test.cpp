@@ -17,7 +17,7 @@ int main(int argc , char *argv[]){
   //Read config params
   cout<<"small value is "<<SMALL_VALUE<<endl;
   cout<<"large negative is "<<LARGE_NEGATIVE<<endl;
-  getchar();
+  //getchar();
   /*Params is a vector of the form
     1. mm_std_xy
     2. mm_std_theta
@@ -74,7 +74,7 @@ int main(int argc , char *argv[]){
   sp->sampleUniform(particles, max_range);  
   //Visualize the sampled particles
   map->visualizeParticles(&particles, 1);
-  getchar();
+  
   //Construct the motion model
   mm::MotionModel *mm = new mm::MotionModel(log, mm_std_xy, mm_std_theta);
   //Delete Later
@@ -82,7 +82,7 @@ int main(int argc , char *argv[]){
   //Delete later
   //Now run the particle filter
   cout<<"Now beginning"<<endl;
-  getchar();
+  //getchar();
   auto begin = std::chrono::system_clock::now();
   for(int iter = 0; iter < time_stamps.size(); iter++) {
     ctpl::thread_pool pool1(num_threads);
@@ -102,7 +102,7 @@ int main(int argc , char *argv[]){
       for (int i = 0; i < num_particles; i++) {
         //clock_t first = clock();
         //Map* map_temp = new Map(map);
-        
+        //map->getIdealLidar(&particles[i]);
         pool1.push(std::bind(&Map::getIdealLidar, map,&particles[i]));
         //clock_t second = clock();
         //cout<<"get ideal lidar took "<<(double)(second-first)/CLOCKS_PER_SEC<<" s"<<endl;

@@ -39,8 +39,7 @@ class Map{
     vector<pair<int,int>> interpolate(int x1, int y1, int x2, int y2);
     void visualizeIdealLidar(ParticleState p);
     void getIdealLidar(ParticleState* p);
-    void interpolate1(double x0, double y0, ParticleState& p, int index, Eigen::Vector2d tip,
-                     Eigen::Vector2d origin, double theta, Mat& grid_p);
+    void interpolate1(Point p1, Point p2, ParticleState* p, int index);
 
   private:
 

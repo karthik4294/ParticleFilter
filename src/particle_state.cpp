@@ -95,8 +95,8 @@ namespace ps{
     ray_tips_.push_back(origin);
     for(int i = 0; i<180; i++) {
       double theta = init_theta + (double)(i*theta_increment);
-      double x = origin(0) + cos((theta*PI)/180);
-      double y = origin(1) + sin((theta*PI)/180);
+      double x = origin(0) + max_range*cos((theta*PI)/180);
+      double y = origin(1) + max_range*sin((theta*PI)/180);
       Eigen::Vector2d point(x,y);
       ray_tips_.push_back(point);
     }

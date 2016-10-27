@@ -32,7 +32,7 @@ namespace sensor_model {
 	                              data::lidar* lidar) {
 		//Re-initialize weight to 1
 		particle->weight(1.0);
-
+		//cout<<"Hello !!!"<<endl;
 		std::vector<int>* lidar_ranges = lidar->ranges;
 		std::vector<int> ideal_ranges = particle->ranges();
 		
@@ -60,6 +60,7 @@ namespace sensor_model {
 
 			//Get the measured range
 			int lidar_range = lidar_ranges->at(i);
+			//ideal_range = lidar_range;
 			//printf("\t Lidar range: %d, Ideal range: %d \n", ideal_range, lidar_range);
 			//Calcualate p_hit
 			double p_hit = getPHit(ideal_range, lidar_range);
@@ -78,6 +79,7 @@ namespace sensor_model {
 			           + z_rand_*p_rand;
 			//printf("Probability is %f \n", p);  
 			//Update the particle weight
+			//cout<<"phit is "<<p_hit<<endl;
 			if(p == 0.0) {
 				p = SMALL_VALUE;
 				cout<<"small value is "<<SMALL_VALUE<<endl;
