@@ -409,6 +409,7 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
     double x0 = p->x();
     double y0 = p->y();
     double theta = p->theta();
+    cout<<theta<<endl;
     std::vector<Eigen::Vector2d> rays = p->getRayTips();
     if(p->ranges().size() != 180) {
       cout<<"Error in laser ranges"<<endl;
@@ -438,7 +439,7 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
       x_axis = rot_mat*x_axis;
       double angle = -90 + (i-1)*(180/179);
       Eigen::Vector2d lidar_point(25 + measured_range[i-1]*cos(angle*PI/180), measured_range[i-1]*sin(angle*PI/180));
-      x_axis = rot_mat*x_axis;
+      lidar_point = rot_mat*lidar_point;
       Point x_tip((x_axis(1) + y0)/res,(x_axis(0) + x0)/res);
       Point lidar_tip((lidar_point(1) + y0)/res,(lidar_point(0) + x0)/res);
       //Delete Later
