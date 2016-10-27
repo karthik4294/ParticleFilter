@@ -84,7 +84,7 @@ namespace sensor_model {
 				p = SMALL_VALUE;
 				cout<<"small value is "<<SMALL_VALUE<<endl;
 			}
-#pragma omp atomic
+
 			wt = wt + fastlog(p);
 		}
 

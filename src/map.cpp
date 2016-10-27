@@ -295,7 +295,7 @@ void Map::visualizeIdealLidar(ParticleState p) {
 //                     Eigen::Vector2d origin, double theta, Mat grid_p);
 
 void Map::getIdealLidar(ParticleState* p) {
-    int num_threads = thread::hardware_concurrency();
+    //int num_threads = thread::hardware_concurrency();
     //cout<<"max threads are "<<num_threads<<endl;
     //ctpl::thread_pool pool(num_threads);
     //Mat grid_p = grid_disp_.clone();
@@ -354,15 +354,40 @@ void Map::getIdealLidar(ParticleState* p) {
       Point p2(tip(1), tip(0));
       //Point hit;
       //pool.push(std::bind(&Map::interpolate1, this, p1, p2, p, i));
-      interpolate1(p1,p2,p,i);
+      //interpolate1(p1,p2,p,i);
+      LineIterator it(grid, p1, p2);
+      Point hit;
+      for(int j = 0; j < it.count; j++, ++it) {
+        double val = grid.at<double>(it.pos());
+        if(val < 1.0) {
+          hit = it.pos();
+          break;
+        }
+      }
+      /*if(i < 90) {
+        color = cv::Scalar(0,0,255);
+      }
+      else {
+        color = cv::Scalar(0,255,0);
+      }*/
+      //Delete Later
+      /*circle(grid_p, hit, 2, color);
+      //circle(grid_p, p2, 1, cv::Scalar(0,0,0));
+      line(grid_p, p1, x_tip, cv::Scalar(255,0,0));*/
+      //Delete Later
+      double distance = sqrt((hit.x-p1.x)*(hit.x-p1.x)
+                            + (hit.y-p1.y)*(hit.y-p1.y));
+
+      p->ranges().at(i-1) = distance;
+      //cout<<"\t index is"<<index<<endl;
 
     }
     //pool.stop(true);
     //Delete Later
-    //namedWindow( "Diag", WINDOW_AUTOSIZE );
-    //imshow("Diag", grid_p);
-    //waitKey(0);
-    //destroyWindow("Diag");
+    /*namedWindow( "Diag", WINDOW_AUTOSIZE );
+    imshow("Diag", grid_p);
+    waitKey(0);
+    destroyWindow("Diag");*/
     //Delete Later
 }
 
@@ -373,6 +398,7 @@ void Map::interpolate1(Point p1, Point p2, ParticleState* p, int index) {
         double val = grid.at<double>(it.pos());
         if(val < 1.0) {
           hit = it.pos();
+          break;
         }
       }
       /*if(i < 90) {
