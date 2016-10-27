@@ -126,8 +126,7 @@ void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_d
   }
 
   std::transform (input_weights.begin (), input_weights.end (), input_weights.begin (),
-                 std::bind1st (std::multiplies <T> () , 1/wt)) ;
-
+                 std::bind1st (std::multiplies <double> () , 1/wt)) ;
 
   std::vector<ps::ParticleState> resampled_particles;
 
@@ -138,14 +137,14 @@ void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_d
 
   int i = 0;
 
-  double w = input_weights[i].weight();
+  double w = input_weights[i];
 
   for(int m = 0; m < s; m++){
 
       double u = r + (i - 1)/m;
       while(u > w){
         i++;
-        w += input_weights[i].weight();
+        w += input_weights[i];
       }
 
       resampled_particles.push_back(ps[i]);
