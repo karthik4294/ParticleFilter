@@ -139,7 +139,7 @@ void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_d
 
   double w = input_weights[i];
 
-  for(int m = 0; m < s; m++){
+  for(int m = 1; m <= s; m++){
 
       double u = r + (i - 1)/m;
       while(u > w){
