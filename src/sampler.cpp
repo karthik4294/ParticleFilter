@@ -15,7 +15,7 @@ ang_res_(5)
 void Sampler::constructFullFreeSpace(){
 
 	for(int i = 0; i < free_space_.size(); i++){
-		for(int j = 0; j < 360; j+=ang_res_){
+		for(int j = -180 ; j < 180; j+=ang_res_){
 			double ang = j*M_PI/180;
 			full_free_space_.push_back(std::make_tuple(free_space_[i].first, free_space_[i].second, ang));
 		}
@@ -60,13 +60,21 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resa
     }*/
     std::random_device rd;
     std::mt19937 gen(rd());
-
+    std::vector<int> particle_count(ps.size(), 0);
     std::discrete_distribution<> d(input_weights.begin(), input_weights.end());
 
     std::vector<ps::ParticleState> resampled_particles;
 
     for(int n=0; n < ps.size(); ++n) {
-      ps::ParticleState particle = ps[d(gen)];
+      int chosen_particle;
+      while(1) {
+        chosen_particle = d(gen);
+        particle_count[chosen_particle] +=1;
+        if(particle_count[chosen_particle] <= 1.0*ps.size()) {
+          break;
+        }
+      }
+      ps::ParticleState particle = ps[chosen_particle];
       double random = (double)rand() / (double)RAND_MAX;
       particle.x((1 + resampling_randomization*(random-0.5))*particle.x());
       random = (double)rand() / (double)RAND_MAX;

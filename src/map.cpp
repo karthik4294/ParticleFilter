@@ -20,6 +20,8 @@ Map::Map(std::string filename, double max_range)
 
   rangemax = max_range/res;
   lidar_xoffset = 25;
+  namedWindow( "Diag", WINDOW_AUTOSIZE );
+  
 }
 
 Map::Map(Map* map) {
@@ -129,7 +131,8 @@ void Map::displayMap(){
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
   imshow( "Display window", grid_disp_);                   // Show our image inside it.
-  waitKey(1);                                          // Wait for a keystroke in the window
+  waitKey(1);   
+  destroyWindow("Display Window");                                       // Wait for a keystroke in the window
 }
 
 void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
@@ -157,7 +160,8 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
     //line(grid_rgb, pt, x_tip, c_color);
   }
 
-  namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
+  // Create a window for display.
+  namedWindow( "Display window", WINDOW_AUTOSIZE );
   imshow( "Display window", grid_rgb);                   // Show our image inside it.
 
   // sleep(0.1);
@@ -308,8 +312,31 @@ void Map::getIdealLidar(ParticleState* p) {
     //float theta;
     //std::cout<<p.ranges()->size()<<std::endl;
     //p->ranges()->clear();
+    for(int i = 0; i< p->ranges().size(); i++) {
+     p->setRangeVal(i,res*rangemax);
+    }
     double x0 = p->x();
     double y0 = p->y();
+    Point query(y0/res, x0/res);
+    double val = 1.0;
+    if(query.x<0 || query.x >=grid.rows) {
+      return;
+    }
+    if(query.y<0 || query.y >=grid.cols) {
+      return;
+    }
+    
+      val = grid.at<double>(query);
+    
+    /*catch(cv::Exception& e) {
+      cout<<"Exception"<<endl;
+      return;
+    }*/
+
+    if(val < 1.0) {
+      //p->ranges() = std::vector<int>(p->ranges().size(), 0);
+      return;
+    }
     double theta = p->theta();
     std::vector<Eigen::Vector2d> rays = p->getRayTips();
     if(p->ranges().size() != 180) {
@@ -362,7 +389,8 @@ void Map::getIdealLidar(ParticleState* p) {
       //pool.push(std::bind(&Map::interpolate1, this, p1, p2, p, i));
       //interpolate1(p1,p2,p,i);
       LineIterator it(grid, p1, p2);
-      Point hit;
+      Point hit = p2;
+      //cout<<"here"<<endl;
       for(int j = 0; j < it.count; j++, ++it) {
         double val = grid.at<double>(it.pos());
         if(val < 1.0) {
@@ -381,10 +409,10 @@ void Map::getIdealLidar(ParticleState* p) {
       //circle(grid_p, p2, 1, cv::Scalar(0,0,0));
       line(grid_p, p1, x_tip, cv::Scalar(255,0,0));*/
       //Delete Later
-      double distance = sqrt((hit.x-p1.x)*(hit.x-p1.x)
-                            + (hit.y-p1.y)*(hit.y-p1.y));
-
-      p->ranges().at(i-1) = res*distance;
+      double distance = res*(sqrt((hit.x-p1.x)*(hit.x-p1.x)
+                            + (hit.y-p1.y)*(hit.y-p1.y)));
+      //cout<<"Setting range as "<<distance<<endl;
+      p->setRangeVal(i-1, distance);
       //cout<<"\t index is"<<index<<endl;
 
     }
@@ -409,13 +437,13 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
     double x0 = p->x();
     double y0 = p->y();
     double theta = p->theta();
-    cout<<theta<<endl;
+    //cout<<theta<<endl;
     std::vector<Eigen::Vector2d> rays = p->getRayTips();
     if(p->ranges().size() != 180) {
       cout<<"Error in laser ranges"<<endl;
     }
     for(int i = 0; i< p->ranges().size(); i++) {
-      p->ranges().at(i) = 0;
+      p->setRangeVal(i,rangemax*res);
     }
     //Delete Later
     cv::Scalar color(0,255,0);
@@ -490,17 +518,18 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
       double distance2 = res*(sqrt((p2.x-p1.x)*(p2.x-p1.x)
                             + (p2.y-p1.y)*(p2.y-p1.y)));
       int dist = (int) distance;
-      p->ranges().at(i-1) = dist;
-      cout<<"\t\t"<<measured_range[i-1]<<"\t"<<dist<<"\t"<<distance2<<endl;
+      //cout<<"Setting range as "<<dist<<endl;
+      p->setRangeVal(i-1, dist);
+      //cout<<"\t\t"<<measured_range[i-1]<<"\t"<<dist<<"\t"<<distance2<<endl;
       //cout<<"\t index is"<<index<<endl;
 
     }
     //pool.stop(true);
     //Delete Later
-    namedWindow( "Diag", WINDOW_AUTOSIZE );
+    //namedWindow( "Diag", WINDOW_AUTOSIZE );
     imshow("Diag", grid_p);
     waitKey(0);
-    destroyWindow("Diag");
+    //destroyWindow("Diag");
     //Delete Later
 }
 

@@ -37,10 +37,12 @@ add_library(particleFilter
 target_link_libraries(particleFilter ${LIBRARIES_LIST})
 
 add_executable(runTest src/run_test.cpp)
+add_executable(runTestSingle src/run_test_single_particle.cpp)
 add_executable(testRayTrace src/test_raytrace.cpp)
 
 target_link_libraries(runTest particleFilter)
 target_link_libraries(testRayTrace particleFilter)
+target_link_libraries(runTestSingle particleFilter)
 
 
 	

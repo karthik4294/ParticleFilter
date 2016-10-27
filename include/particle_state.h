@@ -28,7 +28,8 @@ namespace ps{
 		double theta();		
 		RobotState robot_state();
 		double weight();
-		std::vector<int> ranges() { return ranges_;};
+		std::vector<int> ranges() { return ranges_;}
+		void setRangeVal(int index, int val){ ranges_[index] = val;}
 		void setRanges() { ranges_.resize(180,0);}
 		void setRayTips(double max_range);
 		std::vector<Eigen::Vector2d> getRayTips() {return ray_tips_;}

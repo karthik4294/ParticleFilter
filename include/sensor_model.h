@@ -14,7 +14,7 @@ namespace sensor_model {
 		
 		LidarModel(double max_range, double std_dev, double z_hit,
 			       double z_short, double lambda_short, double z_max,
-			       double z_rand);
+			       double z_rand, double bracket);
 		
 		void updateWeight(ps::ParticleState* particle,
 						  data::lidar* lidar);
@@ -31,6 +31,7 @@ namespace sensor_model {
 
 		//Weight for correct hits
 		double z_hit_;
+		double bracket_;
 
 		//Weight for transient obstacles and the intrinsic parameter to tune
 		//it
@@ -56,6 +57,9 @@ namespace sensor_model {
 
 		//get p_rand
 		double getPRand(int lidar_range);
+
+		//Map to cache CDFs
+		std::map<double, double> normal_cdf_;
 
 	};
 }
