@@ -69,7 +69,9 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resa
       ps::ParticleState particle = ps[d(gen)];
       double random = (double)rand() / (double)RAND_MAX;
       particle.x((1 + resampling_randomization*(random-0.5))*particle.x());
+      random = (double)rand() / (double)RAND_MAX;
       particle.y((1 + resampling_randomization*(random-0.5))*particle.y());
+      random = (double)rand() / (double)RAND_MAX;
       particle.theta((1 + resampling_randomization*(random-0.5))*particle.theta());
       particle.weight(1.0); 
       resampled_particles.push_back(particle);   

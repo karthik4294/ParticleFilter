@@ -69,17 +69,17 @@ int main(int argc , char *argv[]){
                                          z_hit, z_short, lambda_short, z_max,
                                          z_rand);
   //Construct the sampler and sample initial points
-  //num_particles = 1;
+  num_particles = 1;
   sp::Sampler* sp = new sp::Sampler(map, num_particles);
   std::vector<ps::ParticleState> particles;
-  /*ps::ParticleState p;
+  ps::ParticleState p;
   p.x(4000);
   p.y(4100);
   p.theta(-1.57);
   p.setRanges();
   p.setRayTips(max_range);
-  particles.push_back(p);*/
-  sp->sampleUniform(particles, max_range);  
+  particles.push_back(p);
+  //sp->sampleUniform(particles, max_range);  
   //Visualize the sampled particles
   map->visualizeParticles(&particles, 1);
   
@@ -110,9 +110,9 @@ int main(int argc , char *argv[]){
       for (int i = 0; i < num_particles; i++) {
         //clock_t first = clock();
         //Map* map_temp = new Map(map);
-        //data::lidar* lidar = log->getLidar(time);
-        //map->getIdealLidarVis(&particles[i], lidar);
-        pool1.push(std::bind(&Map::getIdealLidar, map,&particles[i]));
+        data::lidar* lidar = log->getLidar(time);
+        map->getIdealLidarVis(&particles[i], lidar);
+        //pool1.push(std::bind(&Map::getIdealLidar, map,&particles[i]));
         //clock_t second = clock();
         //cout<<"get ideal lidar took "<<(double)(second-first)/CLOCKS_PER_SEC<<" s"<<endl;
       }
@@ -124,9 +124,9 @@ int main(int argc , char *argv[]){
         //ps::ParticleState particle = particles[i];
         //ps::ParticleState* particle_ptr = &particle;
         data::lidar* lidar = log->getLidar(time);
-        //sensor->updateWeight(&particles[i], lidar);
-        pool2.push(std::bind(&sensor_model::LidarModel::updateWeight,
-                           sensor, &particles[i], lidar));
+        sensor->updateWeight(&particles[i], lidar);
+        //pool2.push(std::bind(&sensor_model::LidarModel::updateWeight,
+        //                   sensor, &particles[i], lidar));
         //clock_t third = clock();
         //cout<<"update weights took "<<(double)(third - second)/CLOCKS_PER_SEC<<" s"<<endl;
       }
@@ -141,7 +141,7 @@ int main(int argc , char *argv[]){
       //getchar();
       //sp->importanceResample(particles, resampling_randomization);
       // sp->importanceCombResample(particles, comb_dist);
-      sp->importanceResample(particles, resampling_randomization);
+      //sp->importanceResample(particles, resampling_randomization);
       //printf("resampled for iter %d, %zu \n", iter, particles.size());
       //Visualize the resampled particles
       //map->visualizeParticles(&particles, 1);

@@ -48,7 +48,7 @@ namespace sensor_model {
 		printf("************* \n");*/
 			double wt  = particle->weight();
       omp_set_num_threads(2);
-#pragma omp parallel for
+//#pragma omp parallel for
 		for(int i = 0; i < lidar_ranges->size(); i++) {
 
     //int tid = omp_get_thread_num();
@@ -88,8 +88,8 @@ namespace sensor_model {
 
 			wt = wt*p;
 		}
-
-			particle->weight(wt);
+		cout<<"wt is "<<wt<<endl;
+		particle->weight(wt);
 		//if(particle->weight() > 0.001) {
 			////printf("weight for particle %f \n", particle->weight());
 			////getchar();
@@ -109,7 +109,8 @@ namespace sensor_model {
 			double norm_var = (i - ideal_range)/std_dev_;	
 			double probability_density = 
 			               (fastexp(-0.5*norm_var*norm_var)/sqrt(2*PI))/std_dev_;
-			probability += probability_density*sum_res;
+			//probability += probability_density*sum_res;
+			probability = probability_density;
 		}
 		return (probability);
 	}
@@ -143,7 +144,7 @@ namespace sensor_model {
 	//Function to get p_max
 	double LidarModel::getPMax(int lidar_range) {
 		
-		if(lidar_range == max_range_) {
+		if(lidar_range >= max_range_) {
 			return 1.0;
 		}
 		else {

@@ -154,7 +154,7 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
     Point x_tip((x_axis(1) + it->y())/res,(x_axis(0) + it->x())/res); 
     pt = Point(int(it->y()/res), int(it->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
     circle(grid_rgb, pt, 2, c_color);
-    line(grid_rgb, pt, x_tip, c_color);
+    //line(grid_rgb, pt, x_tip, c_color);
   }
 
   namedWindow( "Display window", WINDOW_AUTOSIZE );// Create a window for display.
@@ -162,7 +162,7 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
 
   // sleep(0.1);
 
-  waitKey(0);                                          // Wait for a keystroke in the window
+  waitKey(1);                                          // Wait for a keystroke in the window
   // destroyWindow( "Display window");
 }
 
@@ -465,7 +465,7 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
       //pool.push(std::bind(&Map::interpolate1, this, p1, p2, p, i));
       //interpolate1(p1,p2,p,i);
       LineIterator it(grid, p1, p2);
-      Point hit;
+      Point hit = p2;
       for(int j = 0; j < it.count; j++, ++it) {
         double val = grid.at<double>(it.pos());
         if(val < 1.0) {
@@ -481,13 +481,17 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
       }
       //Delete Later
       circle(grid_p, hit, 2, color);
+      circle(grid_p, p2, 2, cv::Scalar(255,255,0));
       circle(grid_p, lidar_tip, 1, cv::Scalar(255,0,0));
       line(grid_p, p1, x_tip, cv::Scalar(255,0,0));
       //Delete Later
-      double distance = sqrt((hit.x-p1.x)*(hit.x-p1.x)
-                            + (hit.y-p1.y)*(hit.y-p1.y));
-
-      p->ranges().at(i-1) = res*distance;
+      double distance = res*(sqrt((hit.x-p1.x)*(hit.x-p1.x)
+                            + (hit.y-p1.y)*(hit.y-p1.y)));
+      double distance2 = res*(sqrt((p2.x-p1.x)*(p2.x-p1.x)
+                            + (p2.y-p1.y)*(p2.y-p1.y)));
+      int dist = (int) distance;
+      p->ranges().at(i-1) = dist;
+      cout<<"\t\t"<<measured_range[i-1]<<"\t"<<dist<<"\t"<<distance2<<endl;
       //cout<<"\t index is"<<index<<endl;
 
     }
