@@ -32,6 +32,7 @@ class Map{
     }
 
     void visualizeParticles(vector<ParticleState>* particle_list, int color);
+    void visualizeRobot(vector<ParticleState>* particle_list, int color, double time, int iter);
     void visualizePoints(vector<pair<int,int>>* points_list);
     void visualizeRayTrace(Mat& grid_rgb, ParticleState *particle, vector<pair<int,int>>* points_list,
         int r, int g, int b);

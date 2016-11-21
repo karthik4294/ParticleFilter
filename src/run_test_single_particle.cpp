@@ -59,7 +59,8 @@ int main(int argc , char *argv[]){
   double comb_dist = params[11];
   double bracket = params[12];
   //Read Data
-  data::Log* log = new data::Log("../data/log/robotdata1.log");
+  //data::Log* log = new data::Log("../data/log/robotdata1.log");
+  data::Log* log = new data::Log("../data/log/ascii-robotdata4.log");
   std::vector<double> time_stamps = log->getTimeStamps();
 
   //Construct the map

@@ -160,15 +160,119 @@ void Map::visualizeParticles(vector<ParticleState>* particle_list, int color) {
     //line(grid_rgb, pt, x_tip, c_color);
   }
 
+
+  // Create a window for display.
+  namedWindow( "Display window", WINDOW_AUTOSIZE );
+
+  putText(grid_rgb, "10000 particles \n Time: 0 s", Point(0,0), 0, 1.0, cv::Scalar(255,255,255));
+  imshow( "Display window", grid_rgb);                   // Show our image inside it.
+
+  // sleep(0.1);
+
+  waitKey(0);                                          // Wait for a keystroke in the window
+  // destroyWindow( "Display window");
+}
+
+void Map::visualizeRobot(vector<ParticleState>* particle_list, int color, double time, int iter) {
+
+  Mat grid_rgb = grid_disp_.clone();//(temp_grid.size(), CV_8UC3);
+  //cvtColor(temp_grid, grid_rgb, CV_GRAY2RGB);
+
+  Point pt;
+  cv::Scalar c_color;
+  //if (color == 1) {
+    cv::Scalar r_color(0, 0, 255);
+  //}
+  //else {
+    cv::Scalar p_color(255, 0, 0);
+  //}
+  double x = 0.0;
+  double y = 0.0;
+  double theta = 0.0;
+  int size = particle_list->size();
+
+  for(std::vector<ParticleState>::iterator it = particle_list->begin(); it != particle_list->end(); ++it) {
+    //std::cout << int(it->x()/res) << int(it->y()/res) << std::endl; 
+    x += it->x();
+    y += it->y();
+    theta += it->theta();
+    Eigen::Rotation2Dd t(it->theta());
+    Eigen::Matrix2d rot_mat = t.toRotationMatrix();
+    Eigen::Vector2d x_axis(200,0);
+    x_axis = rot_mat*x_axis;
+    Point x_tip((x_axis(1) + it->y())/res,(x_axis(0) + it->x())/res); 
+    pt = Point(int(it->y()/res), int(it->x()/res)); // divided by res as one pixel in visualization = 10 units of distance
+    circle(grid_rgb, pt, 0.5, p_color);
+    //line(grid_rgb, pt, x_tip, c_color);
+  }
+  x = x/size;
+  y = y/size;
+  theta = theta/size;
+
+  Eigen::Rotation2Dd t(theta);
+  Eigen::Matrix2d rot_mat = t.toRotationMatrix();
+  Eigen::Vector2d x_axis(200,0);
+  x_axis = rot_mat*x_axis;
+  Point x_tip((x_axis(1) + y)/res,(x_axis(0) + x)/res); 
+  pt = Point(int(y/res), int(x/res)); // divided by res as one pixel in visualization = 10 units of distance
+//  if(time != )
+  if(iter != -1) {
+    circle(grid_rgb, pt, 6, r_color, 1, CV_AA);
+    line(grid_rgb, pt, x_tip, r_color, 1, CV_AA);
+  }
+  stringstream ss;
+  ss<<"Time: "<<time<<" s";
+  string timestamp = ss.str();
+  string particlecount = "Particles: 10,000";
+  
+
+  //
+      int fontFace = FONT_HERSHEY_PLAIN;
+      double fontScale = 1;
+      int thickness = 1;
+
+      //Mat img(600, 800, CV_8UC3, Scalar::all(0));
+
+      int baseline=0;
+      Size textSize1 = getTextSize(particlecount, fontFace,
+                                  fontScale, thickness, &baseline);
+      Size textSize2 = getTextSize(timestamp, fontFace,
+                                  fontScale, thickness, &baseline);
+      baseline += thickness;
+
+      // center the text
+      Point textOrg1(0,30);
+      Point textOrg2(0,50);
+      // draw the box
+      /*rectangle(grid_rgb, textOrg + Point(0, baseline),
+                textOrg + Point(textSize.width, -textSize.height),
+                Scalar(255,255,255));*/
+      // ... and the baseline first
+      /*line(grid_rgb, textOrg + Point(0, thickness),
+           textOrg + Point(textSize.width, thickness),
+           Scalar(255, 255, 255));*/
+
+      // then put the text itself
+      putText(grid_rgb, particlecount, textOrg1, fontFace, fontScale,
+              Scalar::all(255), thickness, 8);
+      putText(grid_rgb, timestamp, textOrg2, fontFace, fontScale,
+              Scalar::all(255), thickness, 8);
+  //
+  //putText(grid_rgb, text, Point(0,0), 0, 12.0, cv::Scalar(255,255,255));
   // Create a window for display.
   namedWindow( "Display window", WINDOW_AUTOSIZE );
   imshow( "Display window", grid_rgb);                   // Show our image inside it.
 
   // sleep(0.1);
-
-  waitKey(1);                                          // Wait for a keystroke in the window
+  if(iter == -1) {
+    waitKey(0);
+  }
+  else{
+    waitKey(1);                                          // Wait for a keystroke in the window
+  }
   // destroyWindow( "Display window");
 }
+
 
 void Map::visualizePoints(vector<pair<int,int>>* points_list) {
 
@@ -333,8 +437,9 @@ void Map::getIdealLidar(ParticleState* p) {
       return;
     }*/
 
-    if(val < 1.0) {
+    if(val < 0.5) {
       //p->ranges() = std::vector<int>(p->ranges().size(), 0);
+      p->weight(0.0); //Set its weight to 0
       return;
     }
     double theta = p->theta();
@@ -393,7 +498,7 @@ void Map::getIdealLidar(ParticleState* p) {
       //cout<<"here"<<endl;
       for(int j = 0; j < it.count; j++, ++it) {
         double val = grid.at<double>(it.pos());
-        if(val < 1.0) {
+        if(val < 0.5) {
           hit = it.pos();
           break;
         }
@@ -437,6 +542,7 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
     double x0 = p->x();
     double y0 = p->y();
     double theta = p->theta();
+    bool setFlag = true;
     //cout<<theta<<endl;
     std::vector<Eigen::Vector2d> rays = p->getRayTips();
     if(p->ranges().size() != 180) {
@@ -444,6 +550,26 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
     }
     for(int i = 0; i< p->ranges().size(); i++) {
       p->setRangeVal(i,rangemax*res);
+    }
+    Point query(y0/res, x0/res);
+    double val = 1.0;
+    if(query.x<0 || query.x >=grid.rows) {
+      return;
+    }
+    if(query.y<0 || query.y >=grid.cols) {
+      return;
+    }
+    
+      val = grid.at<double>(query);
+    
+    /*catch(cv::Exception& e) {
+      cout<<"Exception"<<endl;
+      return;
+    }*/
+
+    if(val < 1.0) {
+      //p->ranges() = std::vector<int>(p->ranges().size(), 0);
+      setFlag = false;
     }
     //Delete Later
     cv::Scalar color(0,255,0);
@@ -494,12 +620,14 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
       //interpolate1(p1,p2,p,i);
       LineIterator it(grid, p1, p2);
       Point hit = p2;
+      if(setFlag) {
       for(int j = 0; j < it.count; j++, ++it) {
         double val = grid.at<double>(it.pos());
-        if(val < 1.0) {
+        if(val < 0.5) {
           hit = it.pos();
           break;
         }
+      }
       }
       if(i < 90) {
         color = cv::Scalar(0,0,255);
@@ -519,7 +647,9 @@ void Map::getIdealLidarVis(ParticleState* p, data::lidar* lidar) {
                             + (p2.y-p1.y)*(p2.y-p1.y)));
       int dist = (int) distance;
       //cout<<"Setting range as "<<dist<<endl;
-      p->setRangeVal(i-1, dist);
+      
+        p->setRangeVal(i-1, dist);
+      
       //cout<<"\t\t"<<measured_range[i-1]<<"\t"<<dist<<"\t"<<distance2<<endl;
       //cout<<"\t index is"<<index<<endl;
 

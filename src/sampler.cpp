@@ -6,7 +6,7 @@ Sampler::Sampler(Map *map, int num_particles)
 :
 map_(map),
 num_particles_(num_particles),
-ang_res_(5)
+ang_res_(1)
 {
 	free_space_ = map_->getFreeSpace();
 	constructFullFreeSpace();
@@ -45,7 +45,7 @@ void Sampler::sampleUniform(std::vector<ps::ParticleState>& ps, double max_range
 	}
 }
 
-void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resampling_randomization)
+void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resampling_randomization, int iter)
 {
 
     std::vector <double> input_weights;
@@ -62,7 +62,8 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resa
     std::mt19937 gen(rd());
     std::vector<int> particle_count(ps.size(), 0);
     std::discrete_distribution<> d(input_weights.begin(), input_weights.end());
-
+    int max_limit = ps.size();//2 + ps.size()*exp(-0.03*iter);
+    cout<<max_limit<<endl;
     std::vector<ps::ParticleState> resampled_particles;
 
     for(int n=0; n < ps.size(); ++n) {
@@ -70,7 +71,7 @@ void Sampler::importanceResample(std::vector<ps::ParticleState> &ps, double resa
       while(1) {
         chosen_particle = d(gen);
         particle_count[chosen_particle] +=1;
-        if(particle_count[chosen_particle] <= 1.0*ps.size()) {
+        if(particle_count[chosen_particle] <= max_limit) {
           break;
         }
       }
@@ -124,17 +125,25 @@ void Sampler::importanceCombResample(std::vector<ps::ParticleState> &ps, int com
     ps = resampled_particles;
 }
 
-void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_dist) 
+void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_dist, double resampling_threshold, double max_range) 
 {
 
   std::vector <double> input_weights;
   double wt = 0;
-
+  double max_weight = SMALL_VALUE;
   for(std::vector<ps::ParticleState>::iterator it = ps.begin(); it != ps.end(); ++it) {
     input_weights.push_back(it->weight());
     wt += it->weight();
+    if(wt > max_weight) {
+      max_weight = wt;
+    }
   }
-
+  cout<<"Max weight is"<<max_weight<<endl;
+  if(max_weight < resampling_threshold) {
+    sampleUniform(ps, max_range);
+    cout<<"lost localization, resampling "<<max_weight<< endl;
+    return;
+  }
   std::transform (input_weights.begin (), input_weights.end (), input_weights.begin (),
                  std::bind1st (std::multiplies <double> () , 1/wt)) ;
 
@@ -143,21 +152,32 @@ void Sampler::lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_d
   int s = ps.size();
   double max_r = 1/s;
 
-  double r = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX/max_r));
+  double r = static_cast <double> (rand()) / (static_cast <double> (RAND_MAX));
+
+  // r = r/s;
 
   int i = 0;
 
   double w = input_weights[i];
 
-  for(int m = 1; m <= s; m++){
+  for(int m = 0; ;m++){
 
-      double u = r + (i - 1)/m;
-      while(u > w){
+      double u = r + m;
+      while(u > s*w){
         i++;
         w += input_weights[i];
       }
+      // std::cout << i << std::endl;
+      if(i > input_weights.size())
+        i = 1;
+ 
+      if(ps[i].weight() < 10 && m < 10*ps.size())
+        continue;
 
       resampled_particles.push_back(ps[i]);
+
+      if(resampled_particles.size() == s)
+        break;
   }
 
   ps = resampled_particles;

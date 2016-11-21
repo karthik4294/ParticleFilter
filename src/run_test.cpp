@@ -58,8 +58,10 @@ int main(int argc , char *argv[]){
   double max_range = params[10];
   double comb_dist = params[11];
   double bracket = params[12];
+  double resampling_threshold = params[13];
   //Read Data
-  data::Log* log = new data::Log("../data/log/robotdata1.log");
+  //data::Log* log = new data::Log("../data/log/robotdata1.log");
+  data::Log* log = new data::Log("../data/log/ascii-robotdata5.log");
   std::vector<double> time_stamps = log->getTimeStamps();
 
   //Construct the map
@@ -82,8 +84,8 @@ int main(int argc , char *argv[]){
   particles.push_back(p);*/
   sp->sampleUniform(particles, max_range);  
   //Visualize the sampled particles
-  map->visualizeParticles(&particles, 1);
-  
+  //map->visualizeParticles(&particles, 1);
+  map->visualizeRobot(&particles,0 , 0, -1);
   //Construct the motion model
   mm::MotionModel *mm = new mm::MotionModel(log, mm_std_xy, mm_std_theta);
   //Delete Later
@@ -138,14 +140,14 @@ int main(int argc , char *argv[]){
       getchar();*/
       //Now resample the particles
       //Possible speedup : pass a vector to add weights in place
-      map->visualizeParticles(&particles, 1);
+      //map->visualizeParticles(&particles, 1);
       //getchar();
-      sp->importanceResample(particles, resampling_randomization);
+      sp->lowVarianceResample(particles,0, resampling_threshold, max_range);
       // sp->importanceCombResample(particles, comb_dist);
       //sp->importanceResample(particles, resampling_randomization);
       //printf("resampled for iter %d, %zu \n", iter, particles.size());
       //Visualize the resampled particles
-      map->visualizeParticles(&particles, 1);
+      //map->visualizeParticles(&particles, 1);
 
       //getchar();
     }
@@ -155,7 +157,8 @@ int main(int argc , char *argv[]){
       //Apply motion model based on the current time and next time
       mm->applyMotionModel(particles, time, next_time);
       //cout<<"applied motion model"<<endl;
-      map->visualizeParticles(&particles, 0);
+      //map->visualizeParticles(&particles, 0);
+      map->visualizeRobot(&particles,0 , time, iter);
     }
     auto end = std::chrono::system_clock::now();
     //Visualize the new particles

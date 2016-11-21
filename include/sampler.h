@@ -17,9 +17,9 @@ namespace sp{
 						   double max_range);
 		void constructFullFreeSpace();
 		void importanceResample(std::vector<ps::ParticleState> &ps,
-								double resampling_randomization);
+								double resampling_randomization, int iter);
 		void importanceCombResample(std::vector<ps::ParticleState> &ps, int comb_dist);
-		void lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_dist);
+		void lowVarianceResample(std::vector<ps::ParticleState> &ps, int comb_dist, double resampling_threshold, double max_range);
 
 	private:
 
